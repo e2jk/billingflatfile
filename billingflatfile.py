@@ -21,6 +21,11 @@ def parse_args(arguments):
 
     delimited2fixedwidth.add_shared_args(parser)
 
+    parser.add_argument("-o", "--output-directory",
+        help="The directory in which to create the output files",
+        action='store',
+        required=True
+    )
     parser.add_argument("-a", "--application-id",
         help="The application ID. From the vendor specs: the first " \
             "character will be filled with the first letter of the site that " \
@@ -84,18 +89,17 @@ def init():
         # Parse the provided command-line arguments
         args = parse_args(sys.argv[1:])
 
-        #TODO: pass this value via new parameter --output-directory
-        output_directory = "data"
-        if not os.path.isdir(output_directory):
-            os.mkdir(output_directory)
-        metadata_file_name = "%s/S%s%sE" % (output_directory,
+        if not os.path.isdir(args.output_directory):
+            os.mkdir(args.output_directory)
+        metadata_file_name = "%s/S%s%sE" % (args.output_directory,
             args.application_id, args.run_id)
         logging.debug("The metadata file will be written to '%s'" %
             metadata_file_name)
-        detailed_file_name = "%s/S%s%sD" % (output_directory,
+        detailed_file_name = "%s/S%s%sD" % (args.output_directory,
             args.application_id, args.run_id)
         logging.debug("The detailed file will be written to '%s'" %
             detailed_file_name)
+        #TODO: check if these files don't exist, create --overwrite-file arg
 
         # Run the delimited2fixedwidth main process
         # Generates the main file with the detailed transactions
