@@ -6,6 +6,7 @@
 import sys
 import argparse
 import logging
+import re
 import delimited2fixedwidth
 
 def parse_args(arguments):
@@ -19,6 +20,15 @@ def parse_args(arguments):
 
     delimited2fixedwidth.add_shared_args(parser)
 
+    parser.add_argument("-a", "--application-id",
+        help="The application ID. From the vendor specs: the first " \
+            "character will be filled with the first letter of the site that " \
+            "is to be invoiced, and the second character will be filled with " \
+            "a significant letter to describe the application. Must be " \
+            "unique for the receiving application to accept the files.",
+        action='store',
+        required=True
+    )
     parser.add_argument("-r", "--run-id",
         help="The ID for this run. Must be unique for each run for the " \
             "receiving application to accept it.",
@@ -45,6 +55,13 @@ def parse_args(arguments):
         args.logging_level = logging.getLevelName(args.loglevel)
 
     # Validate if the arguments are used correctly
+    args.application_id = args.application_id.upper()
+    m = re.match(r"^[A-Z0-9]{2}$", args.application_id)
+    if not m:
+        logging.critical("The `--application-id` argument must be two " \
+            "characters, from 'AA' to '99'. Exiting...")
+        sys.exit(212)
+
     try:
         args.run_id = int(args.run_id)
     except ValueError:
@@ -55,7 +72,7 @@ def parse_args(arguments):
             "0 and 9999. Exiting...")
         sys.exit(211)
     args.run_id = str(args.run_id).zfill(4)
-    
+
     delimited2fixedwidth.validate_shared_args(args)
 
     logging.debug("These are the parsed arguments:\n'%s'" % args)
