@@ -42,8 +42,9 @@ class TestParseArgs(unittest.TestCase):
         input_file = "tests/sample_files/input1.txt"
         output_directory = "data"
         config_file = "tests/sample_files/configuration1.xlsx"
-        parser = target.parse_args(["-i", input_file, "-o", output_directory,
-            "-c", config_file, "--application-id", "SE", "--run-id", "123"])
+        parser = target.parse_args(["--input", input_file,
+            "--output-directory", output_directory, "--config", config_file,
+            "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(parser.input, input_file)
         self.assertEqual(parser.config, config_file)
         self.assertEqual(parser.run_id, "0123")
@@ -58,9 +59,9 @@ class TestParseArgs(unittest.TestCase):
         output_directory = "data"
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertLogs(level='DEBUG') as cm:
-            parser = target.parse_args(["-i", input_file,
-                "-o", output_directory, "-c", config_file, "--debug",
-                "--application-id", "SE", "--run-id", "123"])
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "--debug", "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(parser.loglevel, logging.DEBUG)
         self.assertEqual(parser.logging_level, "DEBUG")
         self.maxDiff = None
@@ -80,8 +81,9 @@ class TestParseArgs(unittest.TestCase):
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file, "-o", output_directory,
-                "-c", config_file, "--application-id", "SE", "--run-id", "123"])
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(cm1.exception.code, 10)
         self.assertEqual(cm2.output, ["CRITICAL:root:The specified input " \
             "file does not exist. Exiting..."])
@@ -97,8 +99,9 @@ class TestParseArgs(unittest.TestCase):
         self.assertFalse(os.path.isfile(config_file))
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file, "-o", output_directory,
-                "-c", config_file, "--application-id", "SE", "--run-id", "123"])
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(cm1.exception.code, 12)
         self.assertEqual(cm2.output, ["CRITICAL:root:The specified " \
             "configuration file does not exist. Exiting..."])
@@ -112,9 +115,9 @@ class TestParseArgs(unittest.TestCase):
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file,
-                "-o", output_directory, "-c", config_file, "-sh", "INVALID",
-                "--application-id", "SE", "--run-id", "123"])
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "-sh", "INVALID", "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(cm1.exception.code, 21)
         self.assertEqual(cm2.output, ['CRITICAL:root:The `--skip-header` ' \
             'argument must be numeric. Exiting...'])
@@ -128,9 +131,9 @@ class TestParseArgs(unittest.TestCase):
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file,
-                "-o", output_directory, "-c", config_file, "-sf", "INVALID",
-                "--application-id", "SE", "--run-id", "123"])
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "-sf", "INVALID", "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(cm1.exception.code, 22)
         self.assertEqual(cm2.output, ['CRITICAL:root:The `--skip-footer` ' \
             'argument must be numeric. Exiting...'])
@@ -144,8 +147,8 @@ class TestParseArgs(unittest.TestCase):
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file,
-                "-o", output_directory, "-c", config_file,
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
                 "--application-id", "INVALID", "--run-id", "123"])
         self.assertEqual(cm1.exception.code, 212)
         self.assertEqual(cm2.output, ["CRITICAL:root:The `--application-id` " \
@@ -160,8 +163,8 @@ class TestParseArgs(unittest.TestCase):
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file,
-                "-o", output_directory, "-c", config_file,
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
                 "--application-id", "SE", "--run-id", "INVALID"])
         self.assertEqual(cm1.exception.code, 210)
         self.assertEqual(cm2.output, ['CRITICAL:root:The `--run-id` ' \
@@ -176,8 +179,8 @@ class TestParseArgs(unittest.TestCase):
         config_file = "tests/sample_files/configuration1.xlsx"
         with self.assertRaises(SystemExit) as cm1, \
             self.assertLogs(level='CRITICAL') as cm2:
-            parser = target.parse_args(["-i", input_file,
-                "-o", output_directory, "-c", config_file,
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
                 "--application-id", "SE", "--run-id", "12345"])
         self.assertEqual(cm1.exception.code, 211)
         self.assertEqual(cm2.output, ['CRITICAL:root:The `--run-id` ' \
