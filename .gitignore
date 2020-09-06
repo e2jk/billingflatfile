@@ -1,5 +1,6 @@
 .venv-billingflatfile
 html_dev/coverage/
+delimited2fixedwidth*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
