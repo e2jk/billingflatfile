@@ -19,6 +19,13 @@ def parse_args(arguments):
 
     delimited2fixedwidth.add_shared_args(parser)
 
+    parser.add_argument("-r", "--run-id",
+        help="The ID for this run. Must be unique for each run for the " \
+            "receiving application to accept it.",
+        action='store',
+        required=True
+    )
+
     parser.add_argument(
         '-d', '--debug',
         help="Print lots of debugging statements",
@@ -38,6 +45,17 @@ def parse_args(arguments):
         args.logging_level = logging.getLevelName(args.loglevel)
 
     # Validate if the arguments are used correctly
+    try:
+        args.run_id = int(args.run_id)
+    except ValueError:
+        logging.critical("The `--run-id` argument must be numeric. Exiting...")
+        sys.exit(210)
+    if args.run_id < 0 or args.run_id > 9999:
+        logging.critical("The `--run-id` argument must be comprised between " \
+            "0 and 9999. Exiting...")
+        sys.exit(211)
+    args.run_id = str(args.run_id).zfill(4)
+    
     delimited2fixedwidth.validate_shared_args(args)
 
     logging.debug("These are the parsed arguments:\n'%s'" % args)
