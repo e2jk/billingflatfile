@@ -1,4 +1,5 @@
 .venv-billingflatfile
+data/
 html_dev/coverage/
 delimited2fixedwidth*
 
