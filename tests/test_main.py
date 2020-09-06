@@ -253,12 +253,12 @@ class TestInit(unittest.TestCase):
         """
         Test the init code with valid parameters
         """
-        (temp_fd, output_file) = tempfile.mkstemp()
-        self.assertTrue(os.path.isfile(output_file))
+        if not os.path.isdir("data"):
+            os.mkdir("data")
         target.__name__ = "__main__"
         target.sys.argv = ["scriptname.py",
             "--input", "tests/sample_files/input1.txt",
-            "--output", output_file,
+            "--output", "UNUSED",
             "--overwrite-file",
             "--config", "tests/sample_files/configuration1.xlsx",
             "--delimiter", "^",
@@ -268,6 +268,7 @@ class TestInit(unittest.TestCase):
             "--run-id", "123"]
         target.init()
         # Confirm the output file has been written and its content
+        output_file = "data/SSE0123D"
         self.assertTrue(os.path.isfile(output_file))
         with open(output_file) as f:
             s = f.read()
@@ -282,7 +283,6 @@ class TestInit(unittest.TestCase):
                     "Leendert MOLENDIJK [90038979]           "
             self.assertEqual(expected_output, s)
         # Remove the output file
-        os.close(temp_fd)
         os.remove(output_file)
         self.assertFalse(os.path.isfile(output_file))
 

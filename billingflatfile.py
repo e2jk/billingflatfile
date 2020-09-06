@@ -7,6 +7,7 @@ import sys
 import argparse
 import logging
 import re
+import os
 import delimited2fixedwidth
 
 def parse_args(arguments):
@@ -83,9 +84,26 @@ def init():
         # Parse the provided command-line arguments
         args = parse_args(sys.argv[1:])
 
+        #TODO: pass this value via new parameter --output-directory
+        output_directory = "data"
+        if not os.path.isdir(output_directory):
+            os.mkdir(output_directory)
+        metadata_file_name = "%s/S%s%sE" % (output_directory,
+            args.application_id, args.run_id)
+        logging.debug("The metadata file will be written to '%s'" %
+            metadata_file_name)
+        detailed_file_name = "%s/S%s%sD" % (output_directory,
+            args.application_id, args.run_id)
+        logging.debug("The detailed file will be written to '%s'" %
+            detailed_file_name)
+
         # Run the delimited2fixedwidth main process
+        # Generates the main file with the detailed transactions
         (num_input_rows, oldest_date, most_recent_date) = \
-            delimited2fixedwidth.process(args.input, args.output, args.config,
-            args.delimiter, args.quotechar, args.skip_header, args.skip_footer)
+            delimited2fixedwidth.process(args.input, detailed_file_name,
+            args.config, args.delimiter, args.quotechar, args.skip_header,
+            args.skip_footer)
+
+        # Generate the second file containing the metadata
 
 init()
