@@ -33,6 +33,6 @@ MS Windows equivalents:
 ```
 mkdir Documents\devel\billingflatfile\.venv-billingflatfile
 AppData\Local\Programs\Python\Python38-32\python.exe -m venv Documents\devel\billingflatfile\.venv-billingflatfile
-Documents\devel\billingflatfile\.venv-billingflatfile\Scripts\pip3.exe install -r Documents\devel\billingflatfile\requirements.txt
 Documents\devel\billingflatfile\.venv-billingflatfile\Scripts\activate.bat
+Documents\devel\billingflatfile\.venv-billingflatfile\Scripts\pip3.exe install -r Documents\devel\billingflatfile\requirements.txt
 ```
