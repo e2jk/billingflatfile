@@ -22,6 +22,92 @@ sys.path.append('.')
 target = __import__("billingflatfile")
 
 
+class TestPadOutputValue(unittest.TestCase):
+    def test_pad_output_value_numeric(self):
+        """
+        Test padding a numeric output value
+        """
+        val = target.pad_output_value("123", "numeric", 5)
+        self.assertEqual(val, "00123")
+
+    def test_pad_output_value_alphanumeric(self):
+        """
+        Test padding an alphanumeric output value
+        """
+        val = target.pad_output_value("123", "alphanumeric", 5)
+        self.assertEqual(val, "123  ")
+
+    def test_pad_output_value_too_long(self):
+        """
+        Test padding output value, too long input value
+        """
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            target.pad_output_value("TOO LONG", None, 2)
+        self.assertEqual(cm1.exception.code, 214)
+        self.assertEqual(cm2.output, ["CRITICAL:root:Field for metadata file " \
+            "is too long! Length: 8, max length 2. Exiting..."])
+
+    def test_pad_output_value_nonnumeric_number(self):
+        """
+        Test padding output value, passing a non-numeric value for a
+        numeric field
+        """
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            target.pad_output_value("NOT A NUMBER", "numeric", 15)
+        self.assertEqual(cm1.exception.code, 215)
+        self.assertEqual(cm2.output, ["CRITICAL:root:Non-numeric value " \
+            "passed for a numeric metadata file field. Exiting..."])
+
+    def test_pad_output_value_invalid_output_format(self):
+        """
+        Test padding output value, passing an invalid output_format
+        """
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            target.pad_output_value("", "INVALID", 15)
+        self.assertEqual(cm1.exception.code, 216)
+        self.assertEqual(cm2.output, ["CRITICAL:root:Unsupported output format 'INVALID' for metadata file " \
+            "field . Exiting..."])
+
+
+class TestGenerateMetadataFile(unittest.TestCase):
+    def test_generate_metadata_file_invalid_version(self):
+        """
+        Test generating the metadata file with an invalid output file version
+        """
+        file_version = "INVALID"
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            target.generate_metadata_file("application_id", "run_description",
+                "oldest_date", "most_recent_date", "billing_type",
+                "num_input_rows", "run_id", file_version)
+        self.assertEqual(cm1.exception.code, 213)
+        self.assertEqual(cm2.output, ["CRITICAL:root:Unsupported output file " \
+            "version 'INVALID', must be one of 'V1.11'. Exiting..."])
+
+    def test_generate_metadata_file(self):
+        """
+        Test generating the metadata file
+        """
+        application_id = "AA"
+        run_description = "BB"
+        oldest_date = "20200620"
+        most_recent_date = "20201129"
+        billing_type = "E"
+        num_input_rows = "17"
+        run_id = "345"
+        file_version = "V1.11"
+        output = target.generate_metadata_file(application_id, run_description,
+            oldest_date, most_recent_date, billing_type, num_input_rows, run_id,
+            file_version)
+        self.assertEqual(output, "SAABB                            " \
+            "2020062020201129E00001700345V1.11                             " \
+            "                                                              " \
+            "                                           ")
+
+
 class TestParseArgs(unittest.TestCase):
     def test_parse_args_no_arguments(self):
         """
@@ -229,10 +315,24 @@ class TestInit(unittest.TestCase):
             "--application-id", "SE",
             "--run-id", "123"]
         target.init()
-        # Confirm the output file has been written and its content
-        output_file = "data/SSE0123D"
-        self.assertTrue(os.path.isfile(output_file))
-        with open(output_file) as f:
+
+        # Confirm the output files have been written and their content
+        metadata_file_name = "data/SSE0123E"
+        self.assertTrue(os.path.isfile(metadata_file_name))
+        with open(metadata_file_name) as f:
+            s = f.read()
+            expected_output = "SSEAAA                           " \
+                "9999999900000000B00000300123V1.11                          " \
+                "                                                           " \
+                "                                                 "
+            self.assertEqual(expected_output, s)
+        # Remove the metadata output file
+        os.remove(metadata_file_name)
+        self.assertFalse(os.path.isfile(metadata_file_name))
+
+        detailed_file_name = "data/SSE0123D"
+        self.assertTrue(os.path.isfile(detailed_file_name))
+        with open(detailed_file_name) as f:
             s = f.read()
             expected_output = "0004000133034205413540000100202007312006" \
                     "                                        " \
@@ -244,9 +344,9 @@ class TestInit(unittest.TestCase):
                     "                                        " \
                     "Leendert MOLENDIJK [90038979]           "
             self.assertEqual(expected_output, s)
-        # Remove the output file
-        os.remove(output_file)
-        self.assertFalse(os.path.isfile(output_file))
+        # Remove the detailed output file
+        os.remove(detailed_file_name)
+        self.assertFalse(os.path.isfile(detailed_file_name))
 
 
 class TestLicense(unittest.TestCase):
