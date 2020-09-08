@@ -169,11 +169,14 @@ def init():
             args.skip_footer)
 
         # Generate the second file containing the metadata
-        #TODO: Create the --run-description, --billing-type and --file-version arguments
+        #TODO: Create the --run-description, --billing-type and --file-version
+        # arguments
         run_description = "AAA"
         billing_type = "B"
         file_version = "V1.11"
-        output = generate_metadata_file(args.application_id, run_description, oldest_date, most_recent_date, billing_type, num_input_rows, args.run_id, file_version)
+        output = generate_metadata_file(args.application_id, run_description,
+            oldest_date, most_recent_date, billing_type, num_input_rows,
+            args.run_id, file_version)
         save_metadata_file(output, metadata_file_name)
 
 init()
