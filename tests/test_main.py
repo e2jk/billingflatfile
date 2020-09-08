@@ -15,6 +15,7 @@ import io
 import contextlib
 import logging
 import tempfile
+import shutil
 
 CURRENT_VERSION = "0.0.1-alpha"
 
@@ -302,12 +303,12 @@ class TestInit(unittest.TestCase):
         """
         Test the init code with valid parameters
         """
-        if not os.path.isdir("data"):
-            os.mkdir("data")
+        output_directory = "nonexistent_dir"
+        self.assertFalse(os.path.isdir(output_directory))
         target.__name__ = "__main__"
         target.sys.argv = ["scriptname.py",
             "--input", "tests/sample_files/input1.txt",
-            "--output-directory", "data",
+            "--output-directory", output_directory,
             "--config", "tests/sample_files/configuration1.xlsx",
             "--delimiter", "^",
             "--skip-header", "1",
@@ -316,8 +317,10 @@ class TestInit(unittest.TestCase):
             "--run-id", "123"]
         target.init()
 
+        self.assertTrue(os.path.isdir(output_directory))
+
         # Confirm the output files have been written and their content
-        metadata_file_name = "data/SSE0123E"
+        metadata_file_name = "%s/SSE0123E" % output_directory
         self.assertTrue(os.path.isfile(metadata_file_name))
         with open(metadata_file_name) as f:
             s = f.read()
@@ -330,7 +333,7 @@ class TestInit(unittest.TestCase):
         os.remove(metadata_file_name)
         self.assertFalse(os.path.isfile(metadata_file_name))
 
-        detailed_file_name = "data/SSE0123D"
+        detailed_file_name = "%s/SSE0123D" % output_directory
         self.assertTrue(os.path.isfile(detailed_file_name))
         with open(detailed_file_name) as f:
             s = f.read()
@@ -347,6 +350,8 @@ class TestInit(unittest.TestCase):
         # Remove the detailed output file
         os.remove(detailed_file_name)
         self.assertFalse(os.path.isfile(detailed_file_name))
+        shutil.rmtree(output_directory)
+        self.assertFalse(os.path.isdir(output_directory))
 
 
 class TestLicense(unittest.TestCase):
