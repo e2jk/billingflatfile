@@ -95,6 +95,12 @@ def parse_args(arguments):
         action='store',
         required=True
     )
+    parser.add_argument("-ds", "--run-description",
+        help="The description for this run. Free text, max 30 characters.",
+        action='store',
+        required=False,
+        default=""
+    )
     parser.add_argument("-r", "--run-id",
         help="The ID for this run. Must be unique for each run for the " \
             "receiving application to accept it.",
@@ -169,14 +175,17 @@ def init():
             args.skip_footer)
 
         # Generate the second file containing the metadata
-        #TODO: Create the --run-description, --billing-type and --file-version
-        # arguments
-        run_description = "AAA"
+        #TODO: Create the --billing-type and --file-version arguments
         billing_type = "B"
         file_version = "V1.11"
-        output = generate_metadata_file(args.application_id, run_description,
-            oldest_date, most_recent_date, billing_type, num_input_rows,
-            args.run_id, file_version)
+        output = generate_metadata_file(args.application_id,
+            args.run_description,
+            oldest_date,
+            most_recent_date,
+            billing_type,
+            num_input_rows,
+            args.run_id,
+            file_version)
         save_metadata_file(output, metadata_file_name)
 
 init()

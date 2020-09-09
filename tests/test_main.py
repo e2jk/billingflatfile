@@ -134,6 +134,8 @@ class TestParseArgs(unittest.TestCase):
             "--application-id", "SE", "--run-id", "123"])
         self.assertEqual(parser.input, input_file)
         self.assertEqual(parser.config, config_file)
+        self.assertEqual(parser.application_id, "SE")
+        self.assertEqual(parser.run_description, "")
         self.assertEqual(parser.run_id, "0123")
         self.assertEqual(parser.loglevel, logging.WARNING)
         self.assertEqual(parser.logging_level, "WARNING")
@@ -156,8 +158,7 @@ class TestParseArgs(unittest.TestCase):
             "arguments:\n'Namespace(application_id='SE', config='tests/" \
             "sample_files/configuration1.xlsx', delimiter=',', input='tests/" \
             "sample_files/input1.txt', logging_level='DEBUG', loglevel=10, " \
-            "output_directory='data', " \
-            "quotechar='\"', run_id='0123', skip_footer=0, skip_header=0)'"])
+            "output_directory='data', quotechar='\"', run_description='', run_id='0123', skip_footer=0, skip_header=0)'"])
 
     def test_parse_args_invalid_input_file(self):
         """
@@ -314,6 +315,7 @@ class TestInit(unittest.TestCase):
             "--skip-header", "1",
             "--skip-footer", "1",
             "--application-id", "SE",
+            "--run-description", "AAA",
             "--run-id", "123"]
         target.init()
 
