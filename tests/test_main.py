@@ -71,8 +71,8 @@ class TestPadOutputValue(unittest.TestCase):
             self.assertLogs(level='CRITICAL') as cm2:
             target.pad_output_value("", "INVALID", 15)
         self.assertEqual(cm1.exception.code, 216)
-        self.assertEqual(cm2.output, ["CRITICAL:root:Unsupported output format 'INVALID' for metadata file " \
-            "field . Exiting..."])
+        self.assertEqual(cm2.output, ["CRITICAL:root:Unsupported output " \
+            "format 'INVALID' for metadata file field . Exiting..."])
 
 
 class TestGenerateMetadataFile(unittest.TestCase):
