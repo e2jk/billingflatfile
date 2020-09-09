@@ -149,7 +149,6 @@ def parse_args(arguments):
         args.logging_level = logging.getLevelName(args.loglevel)
 
     # Validate if the arguments are used correctly
-
     if not args.output_directory:
         # Default output dir: data/<today's date>
         args.output_directory = os.path.join("data", date.today().isoformat())
