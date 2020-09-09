@@ -8,6 +8,8 @@ import argparse
 import logging
 import re
 import os
+import pathlib
+from datetime import date
 import delimited2fixedwidth
 
 def save_metadata_file(output_content, output_file):
@@ -84,7 +86,7 @@ def parse_args(arguments):
     parser.add_argument("-o", "--output-directory",
         help="The directory in which to create the output files",
         action='store',
-        required=True
+        required=False
     )
     parser.add_argument("-a", "--application-id",
         help="The application ID. From the vendor specs: the first " \
@@ -116,8 +118,8 @@ def parse_args(arguments):
         required=True
     )
     parser.add_argument("-fv", "--file-version",
-        help="The version of the output file to be generated. Only 'V1.11' is " \
-            "currently supported.",
+        help="The version of the output file to be generated. Only 'V1.11' " \
+            "is currently supported.",
         action='store',
         required=False,
         default="V1.11"
@@ -142,6 +144,13 @@ def parse_args(arguments):
         args.logging_level = logging.getLevelName(args.loglevel)
 
     # Validate if the arguments are used correctly
+
+    if not args.output_directory:
+        # Default output dir: data/<today's date>
+        args.output_directory = os.path.join("data", date.today().isoformat())
+    if not os.path.isdir(args.output_directory):
+        pathlib.Path(args.output_directory).mkdir(parents=True, exist_ok=True)
+
     args.application_id = args.application_id.upper()
     m = re.match(r"^[A-Z0-9]{2}$", args.application_id)
     if not m:
@@ -184,8 +193,6 @@ def init():
         # Parse the provided command-line arguments
         args = parse_args(sys.argv[1:])
 
-        if not os.path.isdir(args.output_directory):
-            os.mkdir(args.output_directory)
         metadata_file_name = "%s/S%s%sE" % (args.output_directory,
             args.application_id, args.run_id)
         logging.debug("The metadata file will be written to '%s'" %

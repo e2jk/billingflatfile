@@ -16,6 +16,7 @@ import contextlib
 import logging
 import tempfile
 import shutil
+from datetime import date
 
 CURRENT_VERSION = "0.0.1-alpha"
 
@@ -119,20 +120,20 @@ class TestParseArgs(unittest.TestCase):
             parser = target.parse_args([])
         self.assertEqual(cm.exception.code, 2)
         self.assertTrue("error: the following arguments are required: " \
-            "-i/--input, -c/--config, -o/--output-directory, " \
-            "-a/--application-id, -r/--run-id" in f.getvalue())
+            "-i/--input, -c/--config, -a/--application-id, -r/--run-id" in \
+            f.getvalue())
 
     def test_parse_args_valid_arguments(self):
         """
         Test running the script with all the required arguments
         """
         input_file = "tests/sample_files/input1.txt"
-        output_directory = "data"
         config_file = "tests/sample_files/configuration1.xlsx"
-        parser = target.parse_args(["--input", input_file,
-            "--output-directory", output_directory, "--config", config_file,
-            "--application-id", "SE", "--run-id", "123"])
+        parser = target.parse_args(["--input", input_file, "--run-id", "123",
+            "--config", config_file, "--application-id", "SE"])
         self.assertEqual(parser.input, input_file)
+        self.assertEqual(parser.output_directory,
+            os.path.join("data", date.today().isoformat()))
         self.assertEqual(parser.config, config_file)
         self.assertEqual(parser.application_id, "SE")
         self.assertEqual(parser.run_description, "")
@@ -337,8 +338,8 @@ class TestInit(unittest.TestCase):
             target.init()
         self.assertEqual(cm.exception.code, 2)
         self.assertTrue("error: the following arguments are required: " \
-            "-i/--input, -c/--config, -o/--output-directory, " \
-            "-a/--application-id, -r/--run-id" in f.getvalue())
+            "-i/--input, -c/--config, -a/--application-id, -r/--run-id" in \
+            f.getvalue())
 
     def test_init_valid(self):
         """
