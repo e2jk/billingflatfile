@@ -136,6 +136,7 @@ class TestParseArgs(unittest.TestCase):
         self.assertEqual(parser.config, config_file)
         self.assertEqual(parser.application_id, "SE")
         self.assertEqual(parser.run_description, "")
+        self.assertEqual(parser.billing_type, " ")
         self.assertEqual(parser.run_id, "0123")
         self.assertEqual(parser.loglevel, logging.WARNING)
         self.assertEqual(parser.logging_level, "WARNING")
@@ -155,10 +156,12 @@ class TestParseArgs(unittest.TestCase):
         self.assertEqual(parser.logging_level, "DEBUG")
         self.maxDiff = None
         self.assertEqual(cm.output, ["DEBUG:root:These are the parsed " \
-            "arguments:\n'Namespace(application_id='SE', config='tests/" \
-            "sample_files/configuration1.xlsx', delimiter=',', input='tests/" \
-            "sample_files/input1.txt', logging_level='DEBUG', loglevel=10, " \
-            "output_directory='data', quotechar='\"', run_description='', run_id='0123', skip_footer=0, skip_header=0)'"])
+            "arguments:\n'Namespace(application_id='SE', billing_type=' ', " \
+            "config='tests/sample_files/configuration1.xlsx', delimiter=',', " \
+            "input='tests/sample_files/input1.txt', logging_level='DEBUG', " \
+            "loglevel=10, output_directory='data', quotechar='\"', " \
+            "run_description='', run_id='0123', skip_footer=0, " \
+            "skip_header=0)'"])
 
     def test_parse_args_invalid_input_file(self):
         """
@@ -242,6 +245,25 @@ class TestParseArgs(unittest.TestCase):
         self.assertEqual(cm2.output, ["CRITICAL:root:The `--application-id` " \
             "argument must be two characters, from 'AA' to '99'. Exiting..."])
 
+    def test_parse_args_billing_type_invalid(self):
+        """
+        Test running the script with invalid --billing-type parameters
+        """
+        input_file = "tests/sample_files/input1.txt"
+        output_directory = "data"
+        config_file = "tests/sample_files/configuration1.xlsx"
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "--application-id", "AA", "--billing-type", "INVALID",
+                "--run-id", "123"])
+        self.assertEqual(cm1.exception.code, 217)
+        self.assertEqual(cm2.output, ["CRITICAL:root:The `--billing-type` " \
+            "argument must be one character, 'H' (internal billing), 'E' " \
+            "(external billing) or ' ' (both external and internal billing, " \
+            "or undetermined). Exiting..."])
+
     def test_parse_args_run_id_str(self):
         """
         Test running the script with an invalid --run-id parameter
@@ -316,6 +338,7 @@ class TestInit(unittest.TestCase):
             "--skip-footer", "1",
             "--application-id", "SE",
             "--run-description", "AAA",
+            "--billing-type", "H",
             "--run-id", "123"]
         target.init()
 
@@ -327,7 +350,7 @@ class TestInit(unittest.TestCase):
         with open(metadata_file_name) as f:
             s = f.read()
             expected_output = "SSEAAA                           " \
-                "9999999900000000B00000300123V1.11                          " \
+                "9999999900000000H00000300123V1.11                          " \
                 "                                                           " \
                 "                                                 "
             self.assertEqual(expected_output, s)

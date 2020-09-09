@@ -101,6 +101,14 @@ def parse_args(arguments):
         required=False,
         default=""
     )
+    parser.add_argument("-b", "--billing-type",
+        help="The billing type. Must be 'H' (internal billing), 'E' " \
+            "(external billing) or ' ' (both external and internal billing, " \
+            "or undetermined).",
+        action='store',
+        required=False,
+        default=" "
+    )
     parser.add_argument("-r", "--run-id",
         help="The ID for this run. Must be unique for each run for the " \
             "receiving application to accept it.",
@@ -133,6 +141,14 @@ def parse_args(arguments):
         logging.critical("The `--application-id` argument must be two " \
             "characters, from 'AA' to '99'. Exiting...")
         sys.exit(212)
+
+    args.billing_type = args.billing_type.upper()
+    if args.billing_type not in ("H", "E", " "):
+        logging.critical("The `--billing-type` argument must be one " \
+            "character, 'H' (internal billing), 'E' " \
+            "(external billing) or ' ' (both external and internal billing, " \
+            "or undetermined). Exiting...")
+        sys.exit(217)
 
     try:
         args.run_id = int(args.run_id)
@@ -175,14 +191,13 @@ def init():
             args.skip_footer)
 
         # Generate the second file containing the metadata
-        #TODO: Create the --billing-type and --file-version arguments
-        billing_type = "B"
+        #TODO: Create the --file-version argument
         file_version = "V1.11"
         output = generate_metadata_file(args.application_id,
             args.run_description,
             oldest_date,
             most_recent_date,
-            billing_type,
+            args.billing_type,
             num_input_rows,
             args.run_id,
             file_version)
