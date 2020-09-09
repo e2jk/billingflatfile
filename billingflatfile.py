@@ -193,12 +193,12 @@ def init():
         # Parse the provided command-line arguments
         args = parse_args(sys.argv[1:])
 
-        metadata_file_name = "%s/S%s%sE" % (args.output_directory,
-            args.application_id, args.run_id)
+        metadata_file_name = os.path.join(args.output_directory, "S%s%sE" %
+            (args.application_id, args.run_id))
         logging.debug("The metadata file will be written to '%s'" %
             metadata_file_name)
-        detailed_file_name = "%s/S%s%sD" % (args.output_directory,
-            args.application_id, args.run_id)
+        detailed_file_name = os.path.join(args.output_directory, "S%s%sD" %
+            (args.application_id, args.run_id))
         logging.debug("The detailed file will be written to '%s'" %
             detailed_file_name)
         #TODO: check if these files don't exist, create --overwrite-file arg
