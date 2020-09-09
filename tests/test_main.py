@@ -293,10 +293,10 @@ class TestParseArgs(unittest.TestCase):
             self.assertLogs(level='CRITICAL') as cm2:
             parser = target.parse_args(["--input", input_file,
                 "--output-directory", output_directory, "--config", config_file,
-                "--application-id", "SE", "--run-id", "12345"])
+                "--application-id", "SE", "--run-id", "123456"])
         self.assertEqual(cm1.exception.code, 211)
         self.assertEqual(cm2.output, ['CRITICAL:root:The `--run-id` ' \
-            'argument must be comprised between 0 and 9999. Exiting...'])
+            'argument must be comprised between 0 and 99999. Exiting...'])
 
     def test_parse_args_file_version_invalid(self):
         """
