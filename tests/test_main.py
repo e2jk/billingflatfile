@@ -16,6 +16,7 @@ import contextlib
 import logging
 import tempfile
 import shutil
+import pathlib
 from datetime import date
 
 CURRENT_VERSION = "0.0.1-alpha"
@@ -161,8 +162,8 @@ class TestParseArgs(unittest.TestCase):
             "config='tests/sample_files/configuration1.xlsx', delimiter=',', " \
             "file_version='V1.11', input='tests/sample_files/input1.txt', " \
             "logging_level='DEBUG', loglevel=10, output_directory='data', " \
-            "quotechar='\"', run_description='', run_id='0123', " \
-            "skip_footer=0, skip_header=0)'"])
+            "overwrite_files=False, quotechar='\"', run_description='', " \
+            "run_id='0123', skip_footer=0, skip_header=0)'"])
 
     def test_parse_args_invalid_input_file(self):
         """
@@ -340,6 +341,84 @@ class TestInit(unittest.TestCase):
         self.assertTrue("error: the following arguments are required: " \
             "-i/--input, -c/--config, -a/--application-id, -r/--run-id" in \
             f.getvalue())
+
+    def test_init_existing_metadata_file(self):
+        """
+        Test the init code with existing metadata file, without the
+        --overwrite-files argument
+        """
+        application_id = "SE"
+        run_id = "0123"
+        output_directory = "existing_directory"
+        metadata_file_name = os.path.join(output_directory, "S%s%sE" %
+            (application_id, run_id))
+        pathlib.Path(output_directory).mkdir(parents=True, exist_ok=True)
+        self.assertTrue(os.path.isdir(output_directory))
+        pathlib.Path(metadata_file_name).touch()
+        self.assertTrue(os.path.isfile(metadata_file_name))
+
+        target.__name__ = "__main__"
+        target.sys.argv = ["scriptname.py",
+            "--input", "tests/sample_files/input1.txt",
+            "--output-directory", output_directory,
+            "--config", "tests/sample_files/configuration1.xlsx",
+            "--delimiter", "^",
+            "--skip-header", "1",
+            "--skip-footer", "1",
+            "--application-id", application_id,
+            "--run-description", "AAA",
+            "--billing-type", "H",
+            "--run-id", run_id]
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            target.init()
+
+        self.assertEqual(cm1.exception.code, 219)
+        self.assertEqual(cm2.output, ["CRITICAL:root:The metadata output " \
+            "file '%s' does already exist, will NOT be overwritten. Add the " \
+            "`--overwrite-files` argument to overwrite. Exiting..." %
+            metadata_file_name])
+        shutil.rmtree(output_directory)
+        self.assertFalse(os.path.isdir(output_directory))
+
+    def test_init_existing_detailed_file(self):
+        """
+        Test the init code with existing detailed file, without the
+        --overwrite-files argument
+        """
+        application_id = "SE"
+        run_id = "0123"
+        output_directory = "existing_directory"
+        detailed_file_name = os.path.join(output_directory, "S%s%sD" %
+            (application_id, run_id))
+        pathlib.Path(output_directory).mkdir(parents=True, exist_ok=True)
+        self.assertTrue(os.path.isdir(output_directory))
+        pathlib.Path(detailed_file_name).touch()
+        self.assertTrue(os.path.isfile(detailed_file_name))
+
+        target.__name__ = "__main__"
+        target.sys.argv = ["scriptname.py",
+            "--input", "tests/sample_files/input1.txt",
+            "--output-directory", output_directory,
+            "--config", "tests/sample_files/configuration1.xlsx",
+            "--delimiter", "^",
+            "--skip-header", "1",
+            "--skip-footer", "1",
+            "--application-id", application_id,
+            "--run-description", "AAA",
+            "--billing-type", "H",
+            "--run-id", run_id]
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            target.init()
+
+        self.assertEqual(cm1.exception.code, 220)
+        self.assertEqual(cm2.output, ["CRITICAL:root:The detailed output " \
+            "file '%s' does already exist, will NOT be overwritten. Add the " \
+            "`--overwrite-files` argument to overwrite. Exiting..." %
+            detailed_file_name])
+        shutil.rmtree(output_directory)
+        self.assertFalse(os.path.isdir(output_directory))
 
     def test_init_valid(self):
         """

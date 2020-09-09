@@ -88,6 +88,11 @@ def parse_args(arguments):
         action='store',
         required=False
     )
+    parser.add_argument("-x", "--overwrite-files",
+        help="Allow to overwrite the output files",
+        action='store_true',
+        required=False
+    )
     parser.add_argument("-a", "--application-id",
         help="The application ID. From the vendor specs: the first " \
             "character will be filled with the first letter of the site that " \
@@ -201,7 +206,16 @@ def init():
             (args.application_id, args.run_id))
         logging.debug("The detailed file will be written to '%s'" %
             detailed_file_name)
-        #TODO: check if these files don't exist, create --overwrite-file arg
+        if os.path.isfile(metadata_file_name) and not args.overwrite_files:
+            logging.critical("The metadata output file '%s' does already "\
+                "exist, will NOT be overwritten. Add the `--overwrite-files` "\
+                "argument to overwrite. Exiting..." % metadata_file_name)
+            sys.exit(219)
+        if os.path.isfile(detailed_file_name) and not args.overwrite_files:
+            logging.critical("The detailed output file '%s' does already "\
+                "exist, will NOT be overwritten. Add the `--overwrite-files` "\
+                "argument to overwrite. Exiting..." % detailed_file_name)
+            sys.exit(220)
 
         # Run the delimited2fixedwidth main process
         # Generates the main file with the detailed transactions
