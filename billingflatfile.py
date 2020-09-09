@@ -12,6 +12,15 @@ import pathlib
 from datetime import date
 import delimited2fixedwidth
 
+
+def get_version(rel_path):
+    with open(rel_path) as f:
+        for line in f.read().splitlines():
+            if line.startswith('__version__'):
+                return line.split('"')[1]
+        else:
+            raise RuntimeError("Unable to find version string.")
+
 def save_metadata_file(output_content, output_file):
     with open(output_file, "w") as ofile:
         ofile.write(output_content)
@@ -78,7 +87,7 @@ def parse_args(arguments):
         "billing purposes")
     parser.add_argument('--version',
         action='version',
-        version='%(prog)s 0.0.1-alpha'
+        version='%s %s' % ("%(prog)s", get_version("__init__.py"))
     )
 
     delimited2fixedwidth.add_shared_args(parser)
