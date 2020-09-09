@@ -115,6 +115,13 @@ def parse_args(arguments):
         action='store',
         required=True
     )
+    parser.add_argument("-fv", "--file-version",
+        help="The version of the output file to be generated. Only 'V1.11' is " \
+            "currently supported.",
+        action='store',
+        required=False,
+        default="V1.11"
+    )
 
     parser.add_argument(
         '-d', '--debug',
@@ -149,6 +156,12 @@ def parse_args(arguments):
             "(external billing) or ' ' (both external and internal billing, " \
             "or undetermined). Exiting...")
         sys.exit(217)
+
+    args.file_version = args.file_version.upper()
+    if args.file_version not in ("V1.11", ):
+        logging.critical("Incorrect `--file-version` argument value '%s', " \
+        "currently only 'v1.11' is supported. Exiting..." % args.file_version)
+        sys.exit(218)
 
     try:
         args.run_id = int(args.run_id)
@@ -191,8 +204,6 @@ def init():
             args.skip_footer)
 
         # Generate the second file containing the metadata
-        #TODO: Create the --file-version argument
-        file_version = "V1.11"
         output = generate_metadata_file(args.application_id,
             args.run_description,
             oldest_date,
@@ -200,7 +211,7 @@ def init():
             args.billing_type,
             num_input_rows,
             args.run_id,
-            file_version)
+            args.file_version)
         save_metadata_file(output, metadata_file_name)
 
 init()

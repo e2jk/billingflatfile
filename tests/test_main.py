@@ -158,10 +158,10 @@ class TestParseArgs(unittest.TestCase):
         self.assertEqual(cm.output, ["DEBUG:root:These are the parsed " \
             "arguments:\n'Namespace(application_id='SE', billing_type=' ', " \
             "config='tests/sample_files/configuration1.xlsx', delimiter=',', " \
-            "input='tests/sample_files/input1.txt', logging_level='DEBUG', " \
-            "loglevel=10, output_directory='data', quotechar='\"', " \
-            "run_description='', run_id='0123', skip_footer=0, " \
-            "skip_header=0)'"])
+            "file_version='V1.11', input='tests/sample_files/input1.txt', " \
+            "logging_level='DEBUG', loglevel=10, output_directory='data', " \
+            "quotechar='\"', run_description='', run_id='0123', " \
+            "skip_footer=0, skip_header=0)'"])
 
     def test_parse_args_invalid_input_file(self):
         """
@@ -295,6 +295,24 @@ class TestParseArgs(unittest.TestCase):
         self.assertEqual(cm1.exception.code, 211)
         self.assertEqual(cm2.output, ['CRITICAL:root:The `--run-id` ' \
             'argument must be comprised between 0 and 9999. Exiting...'])
+
+    def test_parse_args_file_version_invalid(self):
+        """
+        Test running the script with an invalid --file-version parameter
+        """
+        input_file = "tests/sample_files/input1.txt"
+        output_directory = "data"
+        config_file = "tests/sample_files/configuration1.xlsx"
+        with self.assertRaises(SystemExit) as cm1, \
+            self.assertLogs(level='CRITICAL') as cm2:
+            parser = target.parse_args(["--input", input_file,
+                "--output-directory", output_directory, "--config", config_file,
+                "--application-id", "SE", "--run-id", "123",
+                "--file-version", "INVALID"])
+        self.assertEqual(cm1.exception.code, 218)
+        self.assertEqual(cm2.output, ["CRITICAL:root:Incorrect " \
+            "`--file-version` argument value 'INVALID', currently only " \
+            "'v1.11' is supported. Exiting..."])
 
     def test_parse_args_version(self):
         """
