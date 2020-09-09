@@ -19,7 +19,7 @@ import shutil
 import pathlib
 from datetime import date
 
-CURRENT_VERSION = "0.0.1-alpha"
+CURRENT_VERSION = "0.0.2-dev"
 
 sys.path.append('.')
 target = __import__("billingflatfile")
