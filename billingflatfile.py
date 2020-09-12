@@ -65,7 +65,8 @@ def generate_metadata_file(application_id, run_description, oldest_date,
     if file_version not in supported_file_versions:
         logging.critical(
             "Unsupported output file version '%s', must be one of '%s'. "
-            "Exiting..." % (file_version, "', '".join(supported_file_versions)))
+            "Exiting..." % (
+                file_version, "', '".join(supported_file_versions)))
         sys.exit(213)
     # 1 - application_id, 3 alphanumeric character
     output = pad_output_value("S%s" %application_id, "alphanumeric", 3)
