@@ -28,16 +28,18 @@ def save_metadata_file(output_content, output_file):
 def pad_output_value(val, output_format, length):
     val = str(val)
     if len(val) > length:
-        logging.critical("Field for metadata file is too long! Length: %d, " \
-            "max length %d. Exiting..." % (len(val), length))
+        logging.critical(
+            "Field for metadata file is too long! Length: %d, max length %d. "
+            "Exiting..." % (len(val), length))
         sys.exit(214)
     if output_format == "numeric":
         # Confirm that field is actually a number
         try:
             int(val)
         except ValueError:
-            logging.critical("Non-numeric value passed for a numeric metadata "\
-                "file field. Exiting...")
+            logging.critical(
+                "Non-numeric value passed for a numeric metadata file field. "
+                "Exiting...")
             sys.exit(215)
         # Numbers get padded with 0's added in front (to the left)
         val = val.zfill(length)
@@ -46,19 +48,21 @@ def pad_output_value(val, output_format, length):
         format_template = "{:<%d}" % length
         val = format_template.format(val)
     else:
-        logging.critical("Unsupported output format '%s' for metadata file " \
-            "field . Exiting..." % output_format)
+        logging.critical(
+            "Unsupported output format '%s' for metadata file field . "
+            "Exiting..." % output_format)
         sys.exit(216)
     return val
 
 def generate_metadata_file(application_id, run_description, oldest_date,
-    most_recent_date, billing_type, num_input_rows, run_id, file_version):
+                           most_recent_date, billing_type, num_input_rows,
+                           run_id, file_version):
     output = ""
     supported_file_versions = ["V1.11"]
     if file_version not in supported_file_versions:
-        logging.critical("Unsupported output file version '%s', must be one " \
-                        "of '%s'. Exiting..." % (file_version,
-                        "', '".join(supported_file_versions)))
+        logging.critical(
+            "Unsupported output file version '%s', must be one of '%s'. "
+            "Exiting..." % (file_version, "', '".join(supported_file_versions)))
         sys.exit(213)
     # 1 - application_id, 3 alphanumeric character
     output = pad_output_value("S%s" %application_id, "alphanumeric", 3)
@@ -82,27 +86,31 @@ def generate_metadata_file(application_id, run_description, oldest_date,
     return output
 
 def parse_args(arguments):
-    parser = argparse.ArgumentParser(description="Generate the required " \
-        "fixed width format files from delimited files extracts for EMR " \
-        "billing purposes")
-    parser.add_argument('--version',
+    parser = argparse.ArgumentParser(
+        description="Generate the required fixed width format files from "
+        "delimited files extracts for EMR billing purposes")
+    parser.add_argument(
+        '--version',
         action='version',
         version='%s %s' % ("%(prog)s", get_version("__init__.py"))
     )
 
     delimited2fixedwidth.add_shared_args(parser)
 
-    parser.add_argument("-o", "--output-directory",
+    parser.add_argument(
+        "-o", "--output-directory",
         help="The directory in which to create the output files",
         action='store',
         required=False
     )
-    parser.add_argument("-x", "--overwrite-files",
+    parser.add_argument(
+        "-x", "--overwrite-files",
         help="Allow to overwrite the output files",
         action='store_true',
         required=False
     )
-    parser.add_argument("-a", "--application-id",
+    parser.add_argument(
+        "-a", "--application-id",
         help="The application ID. From the vendor specs: the first " \
             "character will be filled with the first letter of the site that " \
             "is to be invoiced, and the second character will be filled with " \
@@ -112,13 +120,15 @@ def parse_args(arguments):
         action='store',
         required=True
     )
-    parser.add_argument("-ds", "--run-description",
+    parser.add_argument(
+        "-ds", "--run-description",
         help="The description for this run. Free text, max 30 characters.",
         action='store',
         required=False,
         default=""
     )
-    parser.add_argument("-b", "--billing-type",
+    parser.add_argument(
+        "-b", "--billing-type",
         help="The billing type. Must be 'H' (internal billing), 'E' " \
             "(external billing) or ' ' (both external and internal billing, " \
             "or undetermined). Max 1 character.",
@@ -126,14 +136,16 @@ def parse_args(arguments):
         required=False,
         default=" "
     )
-    parser.add_argument("-r", "--run-id",
+    parser.add_argument(
+        "-r", "--run-id",
         help="The ID for this run. Must be unique for each run for the " \
             "receiving application to accept it. Numeric value between 0 " \
             "and 99999, max 5 characters.",
         action='store',
         required=True
     )
-    parser.add_argument("-fv", "--file-version",
+    parser.add_argument(
+        "-fv", "--file-version",
         help="The version of the output file to be generated. Only 'V1.11' " \
             "is currently supported. Max 8 characters.",
         action='store',
@@ -169,22 +181,24 @@ def parse_args(arguments):
     args.application_id = args.application_id.upper()
     m = re.match(r"^[A-Z0-9]{2}$", args.application_id)
     if not m:
-        logging.critical("The `--application-id` argument must be two " \
-            "characters, from 'AA' to '99'. Exiting...")
+        logging.critical(
+            "The `--application-id` argument must be two characters, from "
+            "'AA' to '99'. Exiting...")
         sys.exit(212)
 
     args.billing_type = args.billing_type.upper()
     if args.billing_type not in ("H", "E", " "):
-        logging.critical("The `--billing-type` argument must be one " \
-            "character, 'H' (internal billing), 'E' " \
-            "(external billing) or ' ' (both external and internal billing, " \
-            "or undetermined). Exiting...")
+        logging.critical(
+            "The `--billing-type` argument must be one character, 'H' "
+            "(internal billing), 'E' (external billing) or ' ' (both external "
+            "and internal billing, or undetermined). Exiting...")
         sys.exit(217)
 
     args.file_version = args.file_version.upper()
     if args.file_version not in ("V1.11", ):
-        logging.critical("Incorrect `--file-version` argument value '%s', " \
-        "currently only 'v1.11' is supported. Exiting..." % args.file_version)
+        logging.critical(
+            "Incorrect `--file-version` argument value '%s', currently only "
+            "'v1.11' is supported. Exiting..." % args.file_version)
         sys.exit(218)
 
     try:
@@ -193,8 +207,9 @@ def parse_args(arguments):
         logging.critical("The `--run-id` argument must be numeric. Exiting...")
         sys.exit(210)
     if args.run_id < 0 or args.run_id > 99999:
-        logging.critical("The `--run-id` argument must be comprised between " \
-            "0 and 99999. Exiting...")
+        logging.critical(
+            "The `--run-id` argument must be comprised between 0 and 99999. "
+            "Exiting...")
         sys.exit(211)
     args.run_id = str(args.run_id).zfill(4)
 
@@ -208,34 +223,39 @@ def init():
         # Parse the provided command-line arguments
         args = parse_args(sys.argv[1:])
 
-        metadata_file_name = os.path.join(args.output_directory, "S%s%sE" %
-            (args.application_id, args.run_id))
-        logging.debug("The metadata file will be written to '%s'" %
-            metadata_file_name)
-        detailed_file_name = os.path.join(args.output_directory, "S%s%sD" %
-            (args.application_id, args.run_id))
-        logging.debug("The detailed file will be written to '%s'" %
-            detailed_file_name)
+        metadata_file_name = os.path.join(args.output_directory, "S%s%sE" % (
+            args.application_id, args.run_id))
+        logging.debug(
+            "The metadata file will be written to '%s'" % metadata_file_name)
+        detailed_file_name = os.path.join(
+            args.output_directory, "S%s%sD" % (
+                args.application_id, args.run_id))
+        logging.debug(
+            "The detailed file will be written to '%s'" % detailed_file_name)
         if os.path.isfile(metadata_file_name) and not args.overwrite_files:
-            logging.critical("The metadata output file '%s' does already "\
-                "exist, will NOT be overwritten. Add the `--overwrite-files` "\
-                "argument to overwrite. Exiting..." % metadata_file_name)
+            logging.critical(
+                "The metadata output file '%s' does already exist, will NOT "
+                "be overwritten. Add the `--overwrite-files` argument to "
+                "overwrite. Exiting..." % metadata_file_name)
             sys.exit(219)
         if os.path.isfile(detailed_file_name) and not args.overwrite_files:
-            logging.critical("The detailed output file '%s' does already "\
-                "exist, will NOT be overwritten. Add the `--overwrite-files` "\
-                "argument to overwrite. Exiting..." % detailed_file_name)
+            logging.critical(
+                "The detailed output file '%s' does already exist, will NOT "
+                "be overwritten. Add the `--overwrite-files` argument to "
+                "overwrite. Exiting..." % detailed_file_name)
             sys.exit(220)
 
         # Run the delimited2fixedwidth main process
         # Generates the main file with the detailed transactions
         (num_input_rows, oldest_date, most_recent_date) = \
-            delimited2fixedwidth.process(args.input, detailed_file_name,
+            delimited2fixedwidth.process(
+            args.input, detailed_file_name,
             args.config, args.delimiter, args.quotechar, args.skip_header,
             args.skip_footer)
 
         # Generate the second file containing the metadata
-        output = generate_metadata_file(args.application_id,
+        output = generate_metadata_file(
+            args.application_id,
             args.run_description,
             oldest_date,
             most_recent_date,
