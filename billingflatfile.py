@@ -21,9 +21,11 @@ def get_version(rel_path):
         else:
             raise RuntimeError("Unable to find version string.")
 
+
 def save_metadata_file(output_content, output_file):
     with open(output_file, "w") as ofile:
         ofile.write(output_content)
+
 
 def pad_output_value(val, output_format, length):
     val = str(val)
@@ -53,6 +55,7 @@ def pad_output_value(val, output_format, length):
             "Exiting..." % output_format)
         sys.exit(216)
     return val
+
 
 def generate_metadata_file(application_id, run_description, oldest_date,
                            most_recent_date, billing_type, num_input_rows,
@@ -84,6 +87,7 @@ def generate_metadata_file(application_id, run_description, oldest_date,
     output += pad_output_value("", "alphanumeric", 131)
 
     return output
+
 
 def parse_args(arguments):
     parser = argparse.ArgumentParser(
@@ -217,6 +221,7 @@ def parse_args(arguments):
 
     logging.debug("These are the parsed arguments:\n'%s'" % args)
     return args
+
 
 def init():
     if __name__ == "__main__":
