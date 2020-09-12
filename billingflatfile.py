@@ -69,7 +69,7 @@ def generate_metadata_file(application_id, run_description, oldest_date,
                 file_version, "', '".join(supported_file_versions)))
         sys.exit(213)
     # 1 - application_id, 3 alphanumeric character
-    output = pad_output_value("S%s" %application_id, "alphanumeric", 3)
+    output = pad_output_value("S%s" % application_id, "alphanumeric", 3)
     # 2 - run_description, 30 alphanumeric character
     output += pad_output_value(run_description, "alphanumeric", 30)
     # 3 - oldest_date, 8 numeric character
