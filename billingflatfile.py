@@ -111,11 +111,11 @@ def parse_args(arguments):
     )
     parser.add_argument(
         "-a", "--application-id",
-        help="The application ID. From the vendor specs: the first " \
-            "character will be filled with the first letter of the site that " \
-            "is to be invoiced, and the second character will be filled with " \
-            "a significant letter to describe the application. Must be " \
-            "unique for the receiving application to accept the files. Max " \
+        help="The application ID. From the vendor specs: the first "
+            "character will be filled with the first letter of the site that "
+            "is to be invoiced, and the second character will be filled with "
+            "a significant letter to describe the application. Must be "
+            "unique for the receiving application to accept the files. Max "
             "2 characters.",
         action='store',
         required=True
@@ -129,8 +129,8 @@ def parse_args(arguments):
     )
     parser.add_argument(
         "-b", "--billing-type",
-        help="The billing type. Must be 'H' (internal billing), 'E' " \
-            "(external billing) or ' ' (both external and internal billing, " \
+        help="The billing type. Must be 'H' (internal billing), 'E' "
+            "(external billing) or ' ' (both external and internal billing, "
             "or undetermined). Max 1 character.",
         action='store',
         required=False,
@@ -138,15 +138,15 @@ def parse_args(arguments):
     )
     parser.add_argument(
         "-r", "--run-id",
-        help="The ID for this run. Must be unique for each run for the " \
-            "receiving application to accept it. Numeric value between 0 " \
+        help="The ID for this run. Must be unique for each run for the "
+            "receiving application to accept it. Numeric value between 0 "
             "and 99999, max 5 characters.",
         action='store',
         required=True
     )
     parser.add_argument(
         "-fv", "--file-version",
-        help="The version of the output file to be generated. Only 'V1.11' " \
+        help="The version of the output file to be generated. Only 'V1.11' "
             "is currently supported. Max 8 characters.",
         action='store',
         required=False,
