@@ -8,14 +8,14 @@
 #   rm -rf html_dev/coverage && coverage html --directory=html_dev/coverage \
 #   --title="Code test coverage for billingflatfile"
 
-import unittest
-import sys
-import os
-import io
 import contextlib
+import io
 import logging
-import shutil
+import os
 import pathlib
+import shutil
+import sys
+import unittest
 from datetime import date
 
 CURRENT_VERSION = "0.0.2-dev"

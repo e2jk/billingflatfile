@@ -3,13 +3,14 @@
 
 #    This file is part of billingflatfile and is MIT-licensed.
 
-import sys
 import argparse
 import logging
-import re
 import os
 import pathlib
+import re
+import sys
 from datetime import date
+
 import delimited2fixedwidth
 
 
