@@ -131,7 +131,42 @@ Development information
 How to install from source
 --------------------------
 
-Setting up a Virtual Python environment and installing the dependencies is covered on the [`README_VIRTUAL_ENVIRONMENT`](../../tree/master/README_VIRTUAL_ENVIRONMENT.md) page.
+### Create the environment:
+```bash
+cd devel/billingflatfile/
+python3 -m pip install --user pipenv
+pipenv install
+```
+
+If you want to develop the script, replace that last command by `pipenv install --dev`
+
+### Activate the virtual environment:
+```bash
+cd devel/billingflatfile/
+pipenv shell
+```
+
+You can also run the script using `pipenv run billingflatfile.py` instead of `python3 billingflatfile.py` without having to set up a subshell (which has some problems in Windows, with the history not being accessible with the up arrow)
+
+### When done:
+```bash
+exit
+```
+
+### Update the dependencies:
+```bash
+pipenv update
+```
+
+### Install a new dependency
+```bash
+pipenv install <package_name> [--dev]
+```
+
+### Update the list of dependencies:
+```bash
+pipenv lock
+```
 
 Building the executable
 -----------------------

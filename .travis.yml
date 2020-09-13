@@ -5,7 +5,8 @@ os: linux
 dist: focal
 # Command to install Python dependencies
 install:
-  - pip3 install -r requirements.txt
+  - pip install pipenv
+  - pipenv install --dev --verbose
 # Command to run tests
 script:
   - ./test.sh
