@@ -121,6 +121,9 @@ optional arguments:
   -fv FILE_VERSION, --file-version FILE_VERSION
                         The version of the output file to be generated. Only 'V1.11' is currently
                         supported. Max 8 characters.
+  -dr DATE_REPORT, --date-report DATE_REPORT
+                        The column number of a Date column to report on in the metadata file. Numeric value
+                        between 0 and 99999.
   -d, --debug           Print lots of debugging statements
   -v, --verbose         Be verbose
 ```

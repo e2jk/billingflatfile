@@ -176,6 +176,15 @@ def parse_args(arguments):
         required=False,
         default="V1.11",
     )
+    parser.add_argument(
+        "-dr",
+        "--date-report",
+        help="The column number of a Date column to report on in the metadata file. "
+        "Numeric value between 0 and 99999.",
+        action="store",
+        required=False,
+        default=None,
+    )
 
     parser.add_argument(
         "-d",
@@ -246,6 +255,19 @@ def parse_args(arguments):
         sys.exit(211)
     args.run_id = str(args.run_id).zfill(4)
 
+    if args.date_report:
+        try:
+            args.date_report = int(args.date_report)
+        except ValueError:
+            logging.critical("The `--date-report` argument must be numeric. Exiting...")
+            sys.exit(221)
+        if args.date_report < 0 or args.date_report > 99999:
+            logging.critical(
+                "The `--date-report` argument must be comprised between 0 and 99999. "
+                "Exiting..."
+            )
+            sys.exit(222)
+
     delimited2fixedwidth.validate_shared_args(args)
 
     logging.debug("These are the parsed arguments:\n'%s'" % args)
@@ -290,6 +312,7 @@ def init():
             args.quotechar,
             args.skip_header,
             args.skip_footer,
+            args.date_report,
         )
         logging.info(
             "Processed %d rows, oldest date %s, most recent date %s"

@@ -257,11 +257,11 @@ class TestParseArgs(unittest.TestCase):
             [
                 "DEBUG:root:These are the parsed arguments:\n'Namespace("
                 "application_id='SE', billing_type=' ', "
-                "config='tests/sample_files/configuration1.xlsx', delimiter=',', "
-                "file_version='V1.11', input='tests/sample_files/input1.txt', "
-                "logging_level='DEBUG', loglevel=10, output_directory='data', "
-                "overwrite_files=False, quotechar='\"', run_description='', "
-                "run_id='0123', skip_footer=0, skip_header=0)'"
+                "config='tests/sample_files/configuration1.xlsx', date_report=None, "
+                "delimiter=',', file_version='V1.11', input='tests/sample_files/"
+                "input1.txt', logging_level='DEBUG', loglevel=10, "
+                "output_directory='data', overwrite_files=False, quotechar='\"', "
+                "run_description='', run_id='0123', skip_footer=0, skip_header=0)'"
             ],
         )
 
@@ -529,6 +529,73 @@ class TestParseArgs(unittest.TestCase):
             cm2.output,
             [
                 "CRITICAL:root:The `--run-id` argument must be comprised between "
+                "0 and 99999. Exiting..."
+            ],
+        )
+
+    def test_parse_args_date_report_str(self):
+        """
+        Test running the script with an invalid --run-id parameter
+        """
+        input_file = "tests/sample_files/input1.txt"
+        output_directory = "data"
+        config_file = "tests/sample_files/configuration1.xlsx"
+        with self.assertRaises(SystemExit) as cm1, self.assertLogs(
+            level="CRITICAL"
+        ) as cm2:
+            target.parse_args(
+                [
+                    "--input",
+                    input_file,
+                    "--output-directory",
+                    output_directory,
+                    "--config",
+                    config_file,
+                    "--application-id",
+                    "SE",
+                    "--run-id",
+                    "456",
+                    "--date-report",
+                    "INVALID",
+                ]
+            )
+        self.assertEqual(cm1.exception.code, 221)
+        self.assertEqual(
+            cm2.output,
+            ["CRITICAL:root:The `--date-report` argument must be numeric. Exiting..."],
+        )
+
+    def test_parse_args_date_report_too_big(self):
+        """
+        Test running the script with a --run-id parameter that's too large
+        """
+        input_file = "tests/sample_files/input1.txt"
+        output_directory = "data"
+        config_file = "tests/sample_files/configuration1.xlsx"
+        with self.assertRaises(SystemExit) as cm1, self.assertLogs(
+            level="CRITICAL"
+        ) as cm2:
+            target.parse_args(
+                [
+                    "--input",
+                    input_file,
+                    "--output-directory",
+                    output_directory,
+                    "--config",
+                    config_file,
+                    "--application-id",
+                    "SE",
+                    "--run-id",
+                    "456",
+                    "--date-report",
+                    "123456",
+                ]
+            )
+        self.assertEqual(cm1.exception.code, 222)
+        self.assertEqual(
+            cm2.output,
+            [
+                "CRITICAL:root:The `--date-report` argument must be comprised between "
                 "0 and 99999. Exiting..."
             ],
         )
