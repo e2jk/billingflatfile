@@ -97,6 +97,8 @@ def generate_metadata_file(
     # 9 - filler, 131 alphanumeric character
     output += pad_output_value("", "alphanumeric", 131)
 
+    logging.debug("Metadata content:\n%s" % output)
+
     return output
 
 
@@ -289,6 +291,10 @@ def init():
             args.skip_header,
             args.skip_footer,
         )
+        logging.info(
+            "Processed %d rows, oldest date %s, most recent date %s"
+            % (num_input_rows, oldest_date, most_recent_date)
+        )
 
         # Generate the second file containing the metadata
         output = generate_metadata_file(
@@ -302,6 +308,7 @@ def init():
             args.file_version,
         )
         save_metadata_file(output, metadata_file_name)
+        logging.info("Metadata file written, end of the process")
 
 
 init()
