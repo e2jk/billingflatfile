@@ -1,9 +1,8 @@
 # Changelog
 These are the changes brought in each versions:
 
-
-v0.0.2-alpha (TBD)
-=========================
+v1.0.0 (2020-09-14)
+===================
 Non-breaking changes:
 ---------------------
 * New `--date-report` argument
