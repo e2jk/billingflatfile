@@ -14,7 +14,7 @@ isort = "*"
 mypy = "*"
 
 [packages]
-delimited2fixedwidth = "==1.0.2"
+delimited2fixedwidth = ">=1.0.2"
 
 [requires]
 python_version = "3.8"
