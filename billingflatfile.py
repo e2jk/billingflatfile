@@ -28,12 +28,12 @@ def save_metadata_file(output_content, output_file):
         ofile.write(output_content)
 
 
-def pad_output_value(val, output_format, length):
+def pad_output_value(val, output_format, length, field_name):
     val = str(val)
     if len(val) > length:
         logging.critical(
-            "Field for metadata file is too long! Length: %d, max length %d. "
-            "Exiting..." % (len(val), length)
+            "Field '%s' for metadata file is too long! Length: %d, max length %d. "
+            "Exiting..." % (field_name, len(val), length)
         )
         sys.exit(214)
     if output_format == "numeric":
@@ -42,7 +42,8 @@ def pad_output_value(val, output_format, length):
             int(val)
         except ValueError:
             logging.critical(
-                "Non-numeric value passed for a numeric metadata file field. Exiting..."
+                "A non-numeric value was passed for the numeric '%s' metadata file "
+                "field. Exiting..." % field_name
             )
             sys.exit(215)
         # Numbers get padded with 0's added in front (to the left)
@@ -53,8 +54,8 @@ def pad_output_value(val, output_format, length):
         val = format_template.format(val)
     else:
         logging.critical(
-            "Unsupported output format '%s' for metadata file field . Exiting..."
-            % output_format
+            "Unsupported output format '%s' for metadata file field '%s'. Exiting..."
+            % (output_format, field_name)
         )
         sys.exit(216)
     return val
@@ -79,23 +80,25 @@ def generate_metadata_file(
         )
         sys.exit(213)
     # 1 - application_id, 3 alphanumeric character
-    output = pad_output_value("S%s" % application_id, "alphanumeric", 3)
+    output = pad_output_value(
+        "S%s" % application_id, "alphanumeric", 3, "application_id"
+    )
     # 2 - run_description, 30 alphanumeric character
-    output += pad_output_value(run_description, "alphanumeric", 30)
+    output += pad_output_value(run_description, "alphanumeric", 30, "run_description")
     # 3 - oldest_date, 8 numeric character
-    output += pad_output_value(oldest_date, "numeric", 8)
+    output += pad_output_value(oldest_date, "numeric", 8, "oldest_date")
     # 4 - most_recent_date, 8 numeric character
-    output += pad_output_value(most_recent_date, "numeric", 8)
+    output += pad_output_value(most_recent_date, "numeric", 8, "most_recent_date")
     # 5 - billing_type, 1 alphanumeric character
-    output += pad_output_value(billing_type, "alphanumeric", 1)
+    output += pad_output_value(billing_type, "alphanumeric", 1, "billing_type")
     # 6 - num_input_rows, 6 numeric character
-    output += pad_output_value(num_input_rows, "numeric", 6)
+    output += pad_output_value(num_input_rows, "numeric", 6, "num_input_rows")
     # 7 - run_id, 5 numeric character
-    output += pad_output_value(run_id, "numeric", 5)
+    output += pad_output_value(run_id, "numeric", 5, "run_id")
     # 8 - file_version, 8 alphanumeric character
-    output += pad_output_value(file_version, "alphanumeric", 8)
+    output += pad_output_value(file_version, "alphanumeric", 8, "file_version")
     # 9 - filler, 131 alphanumeric character
-    output += pad_output_value("", "alphanumeric", 131)
+    output += pad_output_value("", "alphanumeric", 131, "padding")
 
     logging.debug("Metadata content:\n%s" % output)
 

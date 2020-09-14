@@ -60,14 +60,14 @@ class TestPadOutputValue(unittest.TestCase):
         """
         Test padding a numeric output value
         """
-        val = target.pad_output_value("123", "numeric", 5)
+        val = target.pad_output_value("123", "numeric", 5, "Field Name")
         self.assertEqual(val, "00123")
 
     def test_pad_output_value_alphanumeric(self):
         """
         Test padding an alphanumeric output value
         """
-        val = target.pad_output_value("123", "alphanumeric", 5)
+        val = target.pad_output_value("123", "alphanumeric", 5, "Field Name")
         self.assertEqual(val, "123  ")
 
     def test_pad_output_value_too_long(self):
@@ -77,13 +77,13 @@ class TestPadOutputValue(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm1, self.assertLogs(
             level="CRITICAL"
         ) as cm2:
-            target.pad_output_value("TOO LONG", None, 2)
+            target.pad_output_value("TOO LONG", None, 2, "Field Name")
         self.assertEqual(cm1.exception.code, 214)
         self.assertEqual(
             cm2.output,
             [
-                "CRITICAL:root:Field for metadata file is too long! Length: 8, "
-                "max length 2. Exiting..."
+                "CRITICAL:root:Field 'Field Name' for metadata file is too long! "
+                "Length: 8, max length 2. Exiting..."
             ],
         )
 
@@ -95,13 +95,13 @@ class TestPadOutputValue(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm1, self.assertLogs(
             level="CRITICAL"
         ) as cm2:
-            target.pad_output_value("NOT A NUMBER", "numeric", 15)
+            target.pad_output_value("NOT A NUMBER", "numeric", 15, "Field Name")
         self.assertEqual(cm1.exception.code, 215)
         self.assertEqual(
             cm2.output,
             [
-                "CRITICAL:root:Non-numeric value passed for a numeric metadata "
-                "file field. Exiting..."
+                "CRITICAL:root:A non-numeric value was passed for the numeric "
+                "'Field Name' metadata file field. Exiting..."
             ],
         )
 
@@ -112,13 +112,13 @@ class TestPadOutputValue(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm1, self.assertLogs(
             level="CRITICAL"
         ) as cm2:
-            target.pad_output_value("", "INVALID", 15)
+            target.pad_output_value("", "INVALID", 15, "Field Name")
         self.assertEqual(cm1.exception.code, 216)
         self.assertEqual(
             cm2.output,
             [
                 "CRITICAL:root:Unsupported output format 'INVALID' for metadata "
-                "file field . Exiting..."
+                "file field 'Field Name'. Exiting..."
             ],
         )
 
