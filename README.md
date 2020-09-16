@@ -2,7 +2,8 @@
 Generate the required fixed width format files from delimited files extracts for EMR billing purposes
 
 
-[![Latest release](https://img.shields.io/github/v/release/e2jk/billingflatfile)](https://github.com/e2jk/billingflatfile/releases/latest)
+[![Latest release on GitHub](https://img.shields.io/github/v/release/e2jk/billingflatfile)](https://github.com/e2jk/billingflatfile/releases/latest)
+[![Latest release on PyPI](https://img.shields.io/pypi/v/billingflatfile)](https://pypi.org/project/billingflatfile/)
 [![Build Status](https://travis-ci.com/e2jk/billingflatfile.svg?branch=master)](https://travis-ci.com/e2jk/billingflatfile)
 [![codecov](https://codecov.io/gh/e2jk/billingflatfile/branch/master/graph/badge.svg)](https://codecov.io/gh/e2jk/billingflatfile)
 [![GitHub last commit](https://img.shields.io/github/last-commit/e2jk/billingflatfile.svg)](https://github.com/e2jk/billingflatfile/commits/master)
