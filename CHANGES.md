@@ -3,9 +3,9 @@ These are the changes brought in each versions:
 
 v1.0.1 (TBD)
 ===================
-Non-breaking changes:
----------------------
-*
+Other changes:
+--------------
+* Reduce the number of dependencies
 
 v1.0.0 (2020-09-14)
 ===================

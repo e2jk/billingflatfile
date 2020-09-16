@@ -170,6 +170,7 @@ pipenv install <package_name> [--dev]
 We're still creating a `requirements.txt` file for RenovateBot to be able to run the test suite after each new version of our dependencies.
 ```bash
 pipenv lock -r --dev > requirements.txt
+pipenv lock -r > requirements-no-dev.txt
 ```
 
 Building the executable

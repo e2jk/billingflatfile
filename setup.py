@@ -6,8 +6,10 @@ with open("CHANGES.md", "r") as fh:
     changes = fh.read().replace("# Changelog", "Changelog\n=========\n")
 long_description = "%s\n\n%s" % (readme, changes)
 
-with open("requirements.txt", "r") as fh:
-   requirements = fh.readlines()
+with open("requirements-no-dev.txt", "r") as fh:
+    requirements = [line.rstrip() for line in fh if line.rstrip()]
+    if requirements[0].startswith("-i http"):
+        requirements.pop(0)
 
 from billingflatfile import get_version
 
