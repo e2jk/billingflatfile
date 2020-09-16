@@ -18,7 +18,7 @@ import sys
 import unittest
 from datetime import date
 
-CURRENT_VERSION = "1.0.2"
+CURRENT_VERSION = "1.0.3-dev"
 
 sys.path.append(".")
 target = __import__("billingflatfile")
