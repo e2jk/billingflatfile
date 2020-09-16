@@ -48,12 +48,19 @@ The **Output format** defines how the input value must be treated and transforme
 * Decimal
   * Decimal numbers get sent as "cents" instead of "dollars", rounded to the nearest cent. (yeah, weird explanation -- better have a look at the example...). Also padded with `0`s added to the left.
   * Example: "`123.458`" becomes "`00012346`" if a length of 8 is defined
-* Date (DD/MM/YYYY to YYYYMMDD)
-  * A date sent as input format "day/month/year" becomes (without spaces ) "year month day". Day and month can omit the leading 0, if need be.
-  * Example: "`21/06/2020`" becomes "`20200621`" if a length of 8 is defined
-* Date (MM/DD/YYYY to YYYYMMDD)
-  * A date sent as input format "month/day/year" becomes (without spaces ) "year month day". Day and month can omit the leading 0, if need be.
-  * Example: "`06/21/2020`" becomes "`20200621`" if a length of 8 is defined
+  * `Date (DD/MM/YYYY to YYYYMMDD)`
+  * `Date (MM/DD/YYYY to YYYYMMDD)`
+  * `Date (DD-MM-YYYY to YYYYMMDD)`
+  * `Date (MM-DD-YYYY to YYYYMMDD)`
+  * `Date (DD.MM.YYYY to YYYYMMDD)`
+  * `Date (MM.DD.YYYY to YYYYMMDD)`
+  * `Date (DDMMYYYY to YYYYMMDD)`
+  * `Date (MMDDYYYY to YYYYMMDD)`
+    * A date sent with either Day or Month as first element, and with a slash, dash, dot or no separator. Becomes (without spaces) "year month day". When the separator is not empty, the day and month can omit the leading 0, if need be.
+    * Examples:
+      * "`21/06/2020`" becomes "`20200621`" with a format of `Date (DD/MM/YYYY to YYYYMMDD)` and a length of 8
+      * "`6-21-2020`" becomes "`20200621`" with a format of `Date (MM-DD-YYYY to YYYYMMDD)` and a length of 8
+      * "`21062020`" becomes "`20200621`" with a format of `Date (DDMMYYYY to YYYYMMDD)` and a length of 8
 * Time
   A time sent as hour:minutes (with or without colon in the input data) will be sent out without the colon
   * Example: "`20:06`" becomes "`2006`" if a length of 4 is defined
