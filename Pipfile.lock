@@ -18,11 +18,11 @@
     "default": {
         "delimited2fixedwidth": {
             "hashes": [
-                "sha256:d1de65eb773f3467806c0ec922ea644c4f1cc8f31f6aa7f181ec5cdd0164c297",
-                "sha256:e10f61242bdfa219abeb069dc1963b3d6648eaa3f7098486805a259921b443d2"
+                "sha256:0b90893f9c06dc283fb2911c56cbd91d80a2682090cb05433c490758793a6a56",
+                "sha256:40155ec6c3ce2768202252a35ea5804356aee32a86a21e8473c140e8187ea953"
             ],
             "index": "pypi",
-            "version": "==1.0.5"
+            "version": "==1.0.6"
         },
         "et-xmlfile": {
             "hashes": [

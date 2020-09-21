@@ -17,6 +17,7 @@ import shutil
 import sys
 import unittest
 from datetime import date
+from locale import Error as localeError
 
 CURRENT_VERSION = "1.0.3-dev"
 
@@ -259,9 +260,10 @@ class TestParseArgs(unittest.TestCase):
                 "application_id='SE', billing_type=' ', "
                 "config='tests/sample_files/configuration1.xlsx', date_report=None, "
                 "delimiter=',', file_version='V1.11', input='tests/sample_files/"
-                "input1.txt', logging_level='DEBUG', loglevel=10, "
+                "input1.txt', locale='', logging_level='DEBUG', loglevel=10, "
                 "output_directory='data', overwrite_files=False, quotechar='\"', "
-                "run_description='', run_id='0123', skip_footer=0, skip_header=0)'"
+                "run_description='', run_id='0123', skip_footer=0, skip_header=0, "
+                "truncate=[])'"
             ],
         )
 
@@ -805,8 +807,15 @@ class TestInit(unittest.TestCase):
             "H",
             "--run-id",
             "123",
+            "--locale",
+            "fr_FR.utf8",
         ]
-        target.init()
+        try:
+            target.init()
+        except localeError:
+            # On Windows, the French locale is just called "fr"
+            target.sys.argv[-1] = "fr"
+            target.init()
 
         self.assertTrue(os.path.isdir(output_directory))
 

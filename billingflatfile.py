@@ -316,6 +316,8 @@ def init():
             args.skip_header,
             args.skip_footer,
             args.date_report,
+            args.locale,
+            args.truncate,
         )
         logging.info(
             "Processed %d rows, oldest date %s, most recent date %s"
