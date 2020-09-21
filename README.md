@@ -42,29 +42,30 @@ A configuration file is a simple Excel `.xlsx` file in which each row represents
 The **Length** value is self-explanatory: it represents how long the field will be in the generated fixed-width file. If the value in the input file is shorter than this defined length, it will be padded with `0`s or spaces, depending on the type of Output format (see next section).
 
 The **Output format** defines how the input value must be treated and transformed. The following values are supported:
-* Integer
+* `Integer`
   * A numeric value that gets padded with `0`s added to the left
   * Example: "`123`" becomes "`000123`" if a length of 6 is defined
-* Decimal
+* `Decimal`
   * Decimal numbers get sent as "cents" instead of "dollars", rounded to the nearest cent. (yeah, weird explanation -- better have a look at the example...). Also padded with `0`s added to the left.
   * Example: "`123.458`" becomes "`00012346`" if a length of 8 is defined
-  * `Date (DD/MM/YYYY to YYYYMMDD)`
-  * `Date (MM/DD/YYYY to YYYYMMDD)`
-  * `Date (DD-MM-YYYY to YYYYMMDD)`
-  * `Date (MM-DD-YYYY to YYYYMMDD)`
-  * `Date (DD.MM.YYYY to YYYYMMDD)`
-  * `Date (MM.DD.YYYY to YYYYMMDD)`
-  * `Date (DDMMYYYY to YYYYMMDD)`
-  * `Date (MMDDYYYY to YYYYMMDD)`
-    * A date sent with either Day or Month as first element, and with a slash, dash, dot or no separator. Becomes (without spaces) "year month day". When the separator is not empty, the day and month can omit the leading 0, if need be.
-    * Examples:
-      * "`21/06/2020`" becomes "`20200621`" with a format of `Date (DD/MM/YYYY to YYYYMMDD)` and a length of 8
-      * "`6-21-2020`" becomes "`20200621`" with a format of `Date (MM-DD-YYYY to YYYYMMDD)` and a length of 8
-      * "`21062020`" becomes "`20200621`" with a format of `Date (DDMMYYYY to YYYYMMDD)` and a length of 8
-* Time
-  A time sent as hour:minutes (with or without colon in the input data) will be sent out without the colon
+
+* `Date (DD/MM/YYYY to YYYYMMDD)`
+* `Date (MM/DD/YYYY to YYYYMMDD)`
+* `Date (DD-MM-YYYY to YYYYMMDD)`
+* `Date (MM-DD-YYYY to YYYYMMDD)`
+* `Date (DD.MM.YYYY to YYYYMMDD)`
+* `Date (MM.DD.YYYY to YYYYMMDD)`
+* `Date (DDMMYYYY to YYYYMMDD)`
+* `Date (MMDDYYYY to YYYYMMDD)`
+  * A date sent with either Day or Month as first element, and with a slash, dash, dot or no separator. Becomes (without spaces) "year month day". When the separator is not empty, the day and month can omit the leading 0, if need be.
+  * Examples:
+    * "`21/06/2020`" becomes "`20200621`" with a format of `Date (DD/MM/YYYY to YYYYMMDD)` and a length of 8
+    * "`6-21-2020`" becomes "`20200621`" with a format of `Date (MM-DD-YYYY to YYYYMMDD)` and a length of 8
+    * "`21062020`" becomes "`20200621`" with a format of `Date (DDMMYYYY to YYYYMMDD)` and a length of 8
+* `Time`
+  * A time sent as hour:minutes (with or without colon in the input data) will be sent out without the colon
   * Example: "`20:06`" becomes "`2006`" if a length of 4 is defined
-* Text
+* `Text`
   * The value gets sent without format changes (such as those outlined above for date and time), with spaces added at the end, on the right of the string
   * Example: "`Hello`" becomes "<code>Hello&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>" if a length of 10 is defined
 
