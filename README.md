@@ -204,4 +204,5 @@ Follow the instructions mentioned [here](https://packaging.python.org/tutorials/
 ```
 python3 setup.py sdist bdist_wheel
 python3 -m twine upload dist/*
+pipenv lock -r > requirements-no-dev.txt
 ```
