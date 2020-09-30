@@ -48,20 +48,17 @@ The **Output format** defines how the input value must be treated and transforme
 * `Decimal`
   * Decimal numbers get sent as "cents" instead of "dollars", rounded to the nearest cent. (yeah, weird explanation -- better have a look at the example...). Also padded with `0`s added to the left.
   * Example: "`123.458`" becomes "`00012346`" if a length of 8 is defined
+* `Keep numeric`
+  * strips all non-numeric characters from an input value and treats the remaining value as `Integer`
+  * Example: "`1-2.3a`" becomes "`000123`" if a length of 6 is defined
 
-* `Date (DD/MM/YYYY to YYYYMMDD)`
-* `Date (MM/DD/YYYY to YYYYMMDD)`
-* `Date (DD-MM-YYYY to YYYYMMDD)`
-* `Date (MM-DD-YYYY to YYYYMMDD)`
-* `Date (DD.MM.YYYY to YYYYMMDD)`
-* `Date (MM.DD.YYYY to YYYYMMDD)`
-* `Date (DDMMYYYY to YYYYMMDD)`
-* `Date (MMDDYYYY to YYYYMMDD)`
-  * A date sent with either Day or Month as first element, and with a slash, dash, dot or no separator. Becomes (without spaces) "year month day". When the separator is not empty, the day and month can omit the leading 0, if need be.
+* Date
+  * A date to be converted from one format to another. The input value can be sent with either Day or Month as first element or as ISO format YYYYMMDD, and with a slash, dash, dot or no separator. When there is a separator defined, the day and month can omit the leading 0, if need be. See at the top of the [`test_main.py` file](https://github.com/e2jk/delimited2fixedwidth/blob/master/tests/test_main.py#L37) for the full list of supported codes.
   * Examples:
     * "`21/06/2020`" becomes "`20200621`" with a format of `Date (DD/MM/YYYY to YYYYMMDD)` and a length of 8
     * "`6-21-2020`" becomes "`20200621`" with a format of `Date (MM-DD-YYYY to YYYYMMDD)` and a length of 8
     * "`21062020`" becomes "`20200621`" with a format of `Date (DDMMYYYY to YYYYMMDD)` and a length of 8
+    * "`6.21.2020`" becomes "`21/06/2020`" with a format of `Date (MM.DD.YYYY to DD/MM/YYYY)` and a length of 10
 * `Time`
   * A time sent as hour:minutes (with or without colon in the input data) will be sent out without the colon
   * Example: "`20:06`" becomes "`2006`" if a length of 4 is defined
