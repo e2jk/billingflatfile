@@ -1,13 +1,20 @@
 # Changelog
 These are the changes brought in each versions:
 
-v1.0.3 (TBD)
+v1.0.3 (2020-09-30)
 ===================
 Non-breaking changes:
 ---------------------
 * New `--truncate` argument to specify which fields can be cut when the input value is longer than the defined maximum field length
 * New `--locale` argument, in case a different Decimal separator is used
 * Fix: Spaces or empty string accepted as valid Integer and Decimal values (interpreted as 0)
+* Support a large number of new date formats. See at the top of the [`test_main.py` file](https://github.com/e2jk/delimited2fixedwidth/blob/master/tests/test_main.py#L37) for the full list of supported codes. Some examples:
+  * `Date (DD/MM/YYYY to DD/MM/YYYY)`
+  * `Date (YYYYMMDD to DD.MM.YYYY)`
+  * `Date (MM.DD.YYYY to YYYYMMDD)`
+  * `Date (YYYYMMDD to MM-DD-YYYY)`
+* New format `Keep numeric` that strips all non-numeric characters from an input value
+* New `--divert` argument to divert to a separate file the content from rows containing specific values
 
 v1.0.2 (2020-09-16)
 ===================
