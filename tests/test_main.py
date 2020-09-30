@@ -19,7 +19,7 @@ import unittest
 from datetime import date
 from locale import Error as localeError
 
-CURRENT_VERSION = "1.0.3"
+CURRENT_VERSION = "1.0.4-dev"
 
 sys.path.append(".")
 target = __import__("billingflatfile")
