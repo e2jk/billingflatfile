@@ -89,9 +89,10 @@ billingflatfile.exe --input data\input_file.txt --config data\configuration_file
 Program help information
 ------------------------
 ```
-usage: billingflatfile.exe [-h] [--version] -i INPUT -c CONFIG [-dl DELIMITER] [-q QUOTECHAR]
-                          [-sh SKIP_HEADER] [-sf SKIP_FOOTER] [-o OUTPUT_DIRECTORY] [-x] -a APPLICATION_ID
-                          [-ds RUN_DESCRIPTION] [-b BILLING_TYPE] -r RUN_ID [-fv FILE_VERSION] [-d] [-v]
+usage: billingflatfile.py [-h] [--version] -i INPUT -c CONFIG [-dl DELIMITER] [-q QUOTECHAR] [-sh SKIP_HEADER]
+                          [-sf SKIP_FOOTER] [-l LOCALE] [-t TRUNCATE] [-dv DIVERT] [-o OUTPUT_DIRECTORY] [-x] -a
+                          APPLICATION_ID [-ds RUN_DESCRIPTION] [-b BILLING_TYPE] -r RUN_ID [-fv FILE_VERSION]
+                          [-dr DATE_REPORT] [-d] [-v]
 
 Generate the required fixed width format files from delimited files extracts for EMR billing purposes
 
@@ -110,29 +111,41 @@ optional arguments:
                         The number of header lines to skip (default 0)
   -sf SKIP_FOOTER, --skip-footer SKIP_FOOTER
                         The number of footer lines to skip (default 0)
+  -l LOCALE, --locale LOCALE
+                        Change the locale, useful to handle decimal separators
+  -t TRUNCATE, --truncate TRUNCATE
+                        Comma-delimited list of field numbers for which the output will be truncated at the maximum
+                        line length, should the input value be longer than the maximum defined field length. If not
+                        set, a field that is too long will cause the script to stop with an error.
+  -dv DIVERT, --divert DIVERT
+                        Diverts to a separate file the content from rows containing a specific value at a specific
+                        place. The format of this parameter is "<field number>,<value to divert on>" (without quotes).
+                        This parameter can be repeated several times to support different values or different fields.
+                        The diverted content will be saved to a file whose name will be the output filename with
+                        "_diverted" added before the file extension.
   -o OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
                         The directory in which to create the output files
   -x, --overwrite-files
                         Allow to overwrite the output files
   -a APPLICATION_ID, --application-id APPLICATION_ID
-                        The application ID. From the vendor specs: the first character will be filled with
-                        the first letter of the site that is to be invoiced, and the second character will
-                        be filled with a significant letter to describe the application. Must be unique
-                        for the receiving application to accept the files. Max 2 characters.
+                        The application ID. From the vendor specs: the first character will be filled with the first
+                        letter of the site that is to be invoiced, and the second character will be filled with a
+                        significant letter to describe the application. Must be unique for the receiving application
+                        to accept the files. Max 2 characters.
   -ds RUN_DESCRIPTION, --run-description RUN_DESCRIPTION
                         The description for this run. Free text, max 30 characters.
   -b BILLING_TYPE, --billing-type BILLING_TYPE
-                        The billing type. Must be 'H' (internal billing), 'E' (external billing) or ' '
-                        (both external and internal billing, or undetermined). Max 1 character.
+                        The billing type. Must be 'H' (internal billing), 'E' (external billing) or ' ' (both external
+                        and internal billing, or undetermined). Max 1 character.
   -r RUN_ID, --run-id RUN_ID
-                        The ID for this run. Must be unique for each run for the receiving application to
-                        accept it. Numeric value between 0 and 99999, max 5 characters.
+                        The ID for this run. Must be unique for each run for the receiving application to accept it.
+                        Numeric value between 0 and 99999, max 5 characters.
   -fv FILE_VERSION, --file-version FILE_VERSION
-                        The version of the output file to be generated. Only 'V1.11' is currently
-                        supported. Max 8 characters.
+                        The version of the output file to be generated. Only 'V1.11' is currently supported. Max 8
+                        characters.
   -dr DATE_REPORT, --date-report DATE_REPORT
-                        The column number of a Date column to report on in the metadata file. Numeric value
-                        between 0 and 99999.
+                        The column number of a Date column to report on in the metadata file. Numeric value between 0
+                        and 99999.
   -d, --debug           Print lots of debugging statements
   -v, --verbose         Be verbose
 ```
