@@ -83,6 +83,8 @@ An example run of the program could look like this:
 billingflatfile.exe --input data\input_file.txt --config data\configuration_file.xlsx --application-id AB --run-id 456 --skip-header 1 --skip-footer 1 --delimiter "^" --run-description "Nice description" --billing-type "H"
 ```
 
+If you've installed the program following [how to install from source](#how-to-install-from-source), you can run the program with `pipenv run python billingflatfile.py`.
+
 Program help information
 ------------------------
 ```
@@ -191,7 +193,7 @@ Building the executable
 Run the following command in your virtual environment:
 
 ```
-pyinstaller --onefile billingflatfile.py
+pipenv run pyinstaller --onefile billingflatfile.py
 ```
 
 The executable that gets created in the `dist` folder can then be uploaded to Github as a new release.
@@ -202,7 +204,7 @@ Packaging the source and publishing to the Python Package Index
 Follow the instructions mentioned [here](https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives), namely:
 
 ```
-python3 setup.py sdist bdist_wheel
-python3 -m twine upload dist/*
 pipenv lock -r > requirements-no-dev.txt
+pipenv run python setup.py sdist bdist_wheel
+pipenv run python -m twine upload dist/*
 ```
