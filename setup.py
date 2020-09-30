@@ -18,8 +18,8 @@ setuptools.setup(
     version=get_version("__init__.py"),
     author="Emilien Klein",
     author_email="emilien@klein.st",
-    description="Generate the required fixed width format files from " \
-        "delimited files extracts for EMR billing purposes",
+    description="Generate the required fixed width format files from "
+    "delimited files extracts for EMR billing purposes",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/e2jk/billingflatfile",
@@ -30,5 +30,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )
