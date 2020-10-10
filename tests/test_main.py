@@ -275,7 +275,8 @@ class TestParseArgs(unittest.TestCase):
                 "run_id='0123', "
                 "skip_footer=0, "
                 "skip_header=0, "
-                "truncate=[])'"
+                "truncate=[], "
+                "txt_extension=False)'"
             ],
         )
 
@@ -819,6 +820,7 @@ class TestInit(unittest.TestCase):
             "H",
             "--run-id",
             "123",
+            "--txt-extension",
             "--locale",
             "fr_FR.utf8",
         ]
@@ -832,7 +834,7 @@ class TestInit(unittest.TestCase):
         self.assertTrue(os.path.isdir(output_directory))
 
         # Confirm the output files have been written and their content
-        metadata_file_name = "%s/SSE0123E" % output_directory
+        metadata_file_name = "%s/SSE0123E.txt" % output_directory
         self.assertTrue(os.path.isfile(metadata_file_name))
         with open(metadata_file_name) as f:
             s = f.read()
@@ -847,7 +849,7 @@ class TestInit(unittest.TestCase):
         os.remove(metadata_file_name)
         self.assertFalse(os.path.isfile(metadata_file_name))
 
-        detailed_file_name = "%s/SSE0123D" % output_directory
+        detailed_file_name = "%s/SSE0123D.txt" % output_directory
         self.assertTrue(os.path.isfile(detailed_file_name))
         with open(detailed_file_name) as f:
             s = f.read()

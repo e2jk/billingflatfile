@@ -188,6 +188,13 @@ def parse_args(arguments):
         required=False,
         default=None,
     )
+    parser.add_argument(
+        "-txt",
+        "--txt-extension",
+        help="Add a .txt extension to the output files' names.",
+        action="store_true",
+        required=False,
+    )
 
     parser.add_argument(
         "-d",
@@ -285,10 +292,13 @@ def init():
         metadata_file_name = os.path.join(
             args.output_directory, "S%s%sE" % (args.application_id, args.run_id)
         )
-        logging.debug("The metadata file will be written to '%s'" % metadata_file_name)
         detailed_file_name = os.path.join(
             args.output_directory, "S%s%sD" % (args.application_id, args.run_id)
         )
+        if args.txt_extension:
+            metadata_file_name += ".txt"
+            detailed_file_name += ".txt"
+        logging.debug("The metadata file will be written to '%s'" % metadata_file_name)
         logging.debug("The detailed file will be written to '%s'" % detailed_file_name)
         if os.path.isfile(metadata_file_name) and not args.overwrite_files:
             logging.critical(
