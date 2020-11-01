@@ -228,5 +228,4 @@ Run:
 
 * `docker build -t e2jk/billingflatfile:<version> --rm .` to build the Docker image.
 * `docker run --rm e2jk/billingflatfile:<version>` to test the Docker image locally.
-* `docker tag e2jk/billingflatfile:latest e2jk/billingflatfile:<version>` to tag this new image.
 * `docker push e2jk/billingflatfile:<version>` to push the Docker image to Docker Hub.
