@@ -23,6 +23,12 @@ The program can also be installed from the Python Package Index:
 pip install billingflatfile
 ```
 
+Or it can be downloaded and ran directly from the [Docker Hub](https://hub.docker.com/r/e2jk/billingflatfile):
+
+```
+docker run --rm e2jk/billingflatfile [add parameters here]
+```
+
 See below [how to install from source](#how-to-install-from-source).
 
 Configuration file
@@ -81,6 +87,12 @@ An example run of the program could look like this:
 
 ```
 billingflatfile.exe --input data\input_file.txt --config data\configuration_file.xlsx --application-id AB --run-id 456 --skip-header 1 --skip-footer 1 --delimiter "^" --run-description "Nice description" --billing-type "H"
+```
+
+Or it can be ran from the [Docker Hub](https://hub.docker.com/r/e2jk/billingflatfile):
+
+```
+docker run --rm e2jk/billingflatfile [add parameters here]
 ```
 
 If you've installed the program following [how to install from source](#how-to-install-from-source), you can run the program with `pipenv run python billingflatfile.py`.
@@ -208,3 +220,13 @@ pipenv lock -r > requirements-no-dev.txt
 pipenv run python setup.py sdist bdist_wheel
 pipenv run python -m twine upload dist/*
 ```
+
+Create the Docker image and publish it to Docker Hub
+----------------------------------------------------
+
+Run:
+
+* `docker build -t e2jk/billingflatfile:<version> --rm .` to build the Docker image.
+* `docker run --rm e2jk/billingflatfile:<version>` to test the Docker image locally.
+* `docker tag e2jk/billingflatfile:latest e2jk/billingflatfile:<version>` to tag this new image.
+* `docker push e2jk/billingflatfile:<version>` to push the Docker image to Docker Hub.

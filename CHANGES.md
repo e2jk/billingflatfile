@@ -6,6 +6,7 @@ v1.0.4 (TBD)
 Non-breaking changes:
 ---------------------
 * New `--txt-extension` argument to add a `.txt` extension to the output files' names.
+* The program can now be ran in a Docker container: https://hub.docker.com/r/e2jk/billingflatfile
 
 v1.0.3 (2020-09-30)
 ===================
