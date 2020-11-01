@@ -3,6 +3,10 @@ These are the changes brought in each versions:
 
 v1.0.4 (TBD)
 ===================
+Breaking changes:
+-----------------
+* Date and Time fields now default/pad to 0's instead of spaces
+
 Non-breaking changes:
 ---------------------
 * New `--txt-extension` argument to add a `.txt` extension to the output files' names.
