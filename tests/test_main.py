@@ -273,7 +273,6 @@ class TestParseArgs(unittest.TestCase):
                 "logging_level='DEBUG', "
                 "loglevel=10, "
                 "move_input_files=False, "
-                "output=None, "
                 "output_directory='data', "
                 "overwrite_files=False, "
                 "quotechar='\"', "

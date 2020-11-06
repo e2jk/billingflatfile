@@ -205,6 +205,10 @@ def parse_args(arguments):
         dest="loglevel",
         const=logging.INFO,
     )
+    for arg in parser._actions:
+        if arg.dest == "output":
+            # Remove the --output argument
+            arg.container._remove_action(arg)
     args = parser.parse_args(arguments)
 
     # Configure logging level
