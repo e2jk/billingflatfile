@@ -9,7 +9,6 @@ import os
 import pathlib
 import re
 import sys
-from datetime import date
 
 import delimited2fixedwidth
 
@@ -119,13 +118,6 @@ def parse_args(arguments):
     delimited2fixedwidth.add_shared_args(parser)
 
     parser.add_argument(
-        "-o",
-        "--output-directory",
-        help="The directory in which to create the output files",
-        action="store",
-        required=False,
-    )
-    parser.add_argument(
         "-x",
         "--overwrite-files",
         help="Allow to overwrite the output files",
@@ -221,9 +213,6 @@ def parse_args(arguments):
         args.logging_level = logging.getLevelName(args.loglevel)
 
     # Validate if the arguments are used correctly
-    if not args.output_directory:
-        # Default output dir: data/<today's date>
-        args.output_directory = os.path.join("data", date.today().isoformat())
     if not os.path.isdir(args.output_directory):
         pathlib.Path(args.output_directory).mkdir(parents=True, exist_ok=True)
 

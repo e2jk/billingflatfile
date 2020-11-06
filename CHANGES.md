@@ -3,6 +3,10 @@ These are the changes brought in each versions:
 
 v1.0.5 (TBD)
 ===================
+Breaking changes:
+-----------------
+* `--output_directory` is now mandatory, don't create a default output directory in data/<today's date>
+
 Non-breaking changes:
 ---------------------
 

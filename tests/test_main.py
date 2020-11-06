@@ -16,7 +16,6 @@ import pathlib
 import shutil
 import sys
 import unittest
-from datetime import date
 from locale import Error as localeError
 
 CURRENT_VERSION = "1.0.5-dev"
@@ -193,8 +192,8 @@ class TestParseArgs(unittest.TestCase):
             target.parse_args([])
         self.assertEqual(cm.exception.code, 2)
         self.assertTrue(
-            "error: the following arguments are required: -i/--input, "
-            "-c/--config, -a/--application-id, -r/--run-id" in f.getvalue()
+            "error: the following arguments are required: -c/--config, "
+            "-a/--application-id, -r/--run-id" in f.getvalue()
         )
 
     def test_parse_args_valid_arguments(self):
@@ -202,11 +201,15 @@ class TestParseArgs(unittest.TestCase):
         Test running the script with all the required arguments
         """
         input_file = "tests/sample_files/input1.txt"
+        output_directory = "nonexistent_dir"
         config_file = "tests/sample_files/configuration1.xlsx"
+        self.assertFalse(os.path.isdir(output_directory))
         parser = target.parse_args(
             [
                 "--input",
                 input_file,
+                "--output-directory",
+                output_directory,
                 "--run-id",
                 "123",
                 "--config",
@@ -216,9 +219,9 @@ class TestParseArgs(unittest.TestCase):
             ]
         )
         self.assertEqual(parser.input, input_file)
-        self.assertEqual(
-            parser.output_directory, os.path.join("data", date.today().isoformat())
-        )
+        self.assertTrue(os.path.isdir(output_directory))
+        shutil.rmtree(output_directory)
+        self.assertFalse(os.path.isdir(output_directory))
         self.assertEqual(parser.config, config_file)
         self.assertEqual(parser.application_id, "SE")
         self.assertEqual(parser.run_description, "")
@@ -265,9 +268,12 @@ class TestParseArgs(unittest.TestCase):
                 "divert=[], "
                 "file_version='V1.11', "
                 "input='tests/sample_files/input1.txt', "
+                "input_directory=None, "
                 "locale='', "
                 "logging_level='DEBUG', "
                 "loglevel=10, "
+                "move_input_files=False, "
+                "output=None, "
                 "output_directory='data', "
                 "overwrite_files=False, "
                 "quotechar='\"', "
@@ -673,8 +679,8 @@ class TestInit(unittest.TestCase):
             target.init()
         self.assertEqual(cm.exception.code, 2)
         self.assertTrue(
-            "error: the following arguments are required: -i/--input, "
-            "-c/--config, -a/--application-id, -r/--run-id" in f.getvalue()
+            "error: the following arguments are required: -c/--config, "
+            "-a/--application-id, -r/--run-id" in f.getvalue()
         )
 
     def test_init_existing_metadata_file(self):
