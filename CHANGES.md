@@ -11,6 +11,7 @@ Breaking changes:
 Non-breaking changes:
 ---------------------
 * Process all the files in a directory as multiple input files through the new arguments `--input-directory` and `--output-directory`
+* New `--move-input-files` argument to move the input files to the output directory after processing
 
 v1.0.4 (2020-11-02)
 ===================
