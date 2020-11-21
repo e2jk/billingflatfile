@@ -158,7 +158,7 @@ def parse_args(arguments):
         "-r",
         "--run-id",
         help="The ID for this run. Must be unique for each run for the receiving "
-        "application to accept it. Numeric value between 0 and 99999, max 5 "
+        "application to accept it. Numeric value between 0 and 9999, max 4 "
         "characters.",
         action="store",
         required=True,
