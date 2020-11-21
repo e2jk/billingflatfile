@@ -386,6 +386,7 @@ def init():
                 args.locale,
                 args.truncate,
                 args.divert,
+                args.input_encoding,
             )
             logging.info(
                 "Processed %d rows, oldest date %s, most recent date %s"

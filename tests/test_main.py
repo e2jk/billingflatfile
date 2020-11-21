@@ -276,6 +276,7 @@ class TestParseArgs(unittest.TestCase):
                 "file_version='V1.11', "
                 "input='tests/sample_files/input1.txt', "
                 "input_directory=None, "
+                "input_encoding='utf-8', "
                 "locale='', "
                 "logging_level='DEBUG', "
                 "loglevel=10, "
