@@ -100,10 +100,10 @@ If you've installed the program following [how to install from source](#how-to-i
 Program help information
 ------------------------
 ```
-usage: billingflatfile.py [-h] [--version] (-i INPUT | -id INPUT_DIRECTORY) [-od OUTPUT_DIRECTORY] [-m] -c CONFIG [-dl DELIMITER]
-                          [-q QUOTECHAR] [-sh SKIP_HEADER] [-sf SKIP_FOOTER] [-l LOCALE] [-t TRUNCATE] [-dv DIVERT] [-x] -a APPLICATION_ID
-                          [-ds RUN_DESCRIPTION] [-b BILLING_TYPE] [-r RUN_ID] [-rf RUN_ID_FILE] [-fv FILE_VERSION] [-dr DATE_REPORT] [-txt]
-                          [-d] [-v]
+usage: billingflatfile.py [-h] [--version] (-i INPUT | -id INPUT_DIRECTORY) [-ie INPUT_ENCODING] [-od OUTPUT_DIRECTORY] [-m] -c CONFIG
+                          [-dl DELIMITER] [-q QUOTECHAR] [-sh SKIP_HEADER] [-sf SKIP_FOOTER] [-l LOCALE] [-t TRUNCATE] [-dv DIVERT] [-x] -a
+                          APPLICATION_ID [-ds RUN_DESCRIPTION] [-b BILLING_TYPE] [-r RUN_ID] [-rf RUN_ID_FILE] [-fv FILE_VERSION]
+                          [-dr DATE_REPORT] [-txt] [-d] [-v]
 
 Generate the required fixed width format files from delimited files extracts for EMR billing purposes
 
@@ -114,6 +114,8 @@ optional arguments:
                         Specify the input file
   -id INPUT_DIRECTORY, --input-directory INPUT_DIRECTORY
                         Specify the input directory from which to process input files
+  -ie INPUT_ENCODING, --input-encoding INPUT_ENCODING
+                        Specify the encoding of the input files (default: 'utf-8')
   -od OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
                         The directory in which to create the output files
   -m, --move-input-files
