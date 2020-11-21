@@ -225,7 +225,7 @@ Follow the instructions mentioned [here](https://packaging.python.org/tutorials/
 ```
 pipenv lock -r > requirements-no-dev.txt
 pipenv run python setup.py sdist bdist_wheel
-pipenv run python -m twine upload dist/*
+pipx run twine upload dist/*
 ```
 
 Create the Docker image and publish it to Docker Hub
