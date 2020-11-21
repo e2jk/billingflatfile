@@ -556,7 +556,7 @@ class TestParseArgs(unittest.TestCase):
             cm2.output,
             [
                 "CRITICAL:root:The `--run-id` argument must be comprised between "
-                "0 and 99999. Exiting..."
+                "0 and 9999. Exiting..."
             ],
         )
 

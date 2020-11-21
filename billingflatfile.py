@@ -252,9 +252,9 @@ def parse_args(arguments):
     except ValueError:
         logging.critical("The `--run-id` argument must be numeric. Exiting...")
         sys.exit(210)
-    if args.run_id < 0 or args.run_id > 99999:
+    if args.run_id < 0 or args.run_id > 9999:
         logging.critical(
-            "The `--run-id` argument must be comprised between 0 and 99999. Exiting..."
+            "The `--run-id` argument must be comprised between 0 and 9999. Exiting..."
         )
         sys.exit(211)
 

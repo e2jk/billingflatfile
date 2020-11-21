@@ -6,6 +6,7 @@ v1.0.5 (TBD)
 Breaking changes:
 -----------------
 * `--output_directory` is now mandatory, don't create a default output directory in data/<today's date>
+* Upper limit for the `--run-id` argument down from 99999 to 9999
 
 Non-breaking changes:
 ---------------------
