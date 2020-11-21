@@ -102,7 +102,8 @@ Program help information
 ```
 usage: billingflatfile.py [-h] [--version] (-i INPUT | -id INPUT_DIRECTORY) [-od OUTPUT_DIRECTORY] [-m] -c CONFIG [-dl DELIMITER]
                           [-q QUOTECHAR] [-sh SKIP_HEADER] [-sf SKIP_FOOTER] [-l LOCALE] [-t TRUNCATE] [-dv DIVERT] [-x] -a APPLICATION_ID
-                          [-ds RUN_DESCRIPTION] [-b BILLING_TYPE] -r RUN_ID [-fv FILE_VERSION] [-dr DATE_REPORT] [-txt] [-d] [-v]
+                          [-ds RUN_DESCRIPTION] [-b BILLING_TYPE] [-r RUN_ID] [-rf RUN_ID_FILE] [-fv FILE_VERSION] [-dr DATE_REPORT] [-txt]
+                          [-d] [-v]
 
 Generate the required fixed width format files from delimited files extracts for EMR billing purposes
 
@@ -153,6 +154,10 @@ optional arguments:
   -r RUN_ID, --run-id RUN_ID
                         The ID for this run. Must be unique for each run for the receiving application to accept it. Numeric value between 0
                         and 9999, max 4 characters.
+  -rf RUN_ID_FILE, --run-id-file RUN_ID_FILE
+                        Point to a file from which to retrieve the ID for this run. After processing, the Run ID + 1 is saved to this file,
+                        allowing for automated recurring runs (for instance associated with the `--input-directory` and `--move-input-files`
+                        arguments). Can be used in conjunction with the `--run-id` argument to seed the initial value of the Run ID.
   -fv FILE_VERSION, --file-version FILE_VERSION
                         The version of the output file to be generated. Only 'V1.11' is currently supported. Max 8 characters.
   -dr DATE_REPORT, --date-report DATE_REPORT

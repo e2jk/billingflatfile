@@ -23,7 +23,7 @@ def get_version(rel_path):
             raise RuntimeError("Unable to find version string.")
 
 
-def save_metadata_file(output_content, output_file):
+def save_file(output_content, output_file):
     with open(output_file, "w") as ofile:
         ofile.write(output_content)
 
@@ -105,6 +105,41 @@ def generate_metadata_file(
     return output
 
 
+def validate_run_id_run_id_file(args):
+    if not args.run_id and not args.run_id_file:
+        logging.critical(
+            "Either the `--run-id` or the `--run-id-file` arguments "
+            "must be specified. Exiting..."
+        )
+        sys.exit(224)
+    if not args.run_id:
+        if os.path.isfile(args.run_id_file):
+            # Read the Run ID from the provided file
+            with open(args.run_id_file) as f:
+                content = f.read()
+                try:
+                    args.run_id = int(content)
+                except ValueError:
+                    logging.critical(
+                        "The value stored in the file passed in the `--run-id-file` "
+                        "argument must be numeric. Exiting..."
+                    )
+                    sys.exit(225)
+        else:
+            # Default Run ID starts at 0
+            args.run_id = 0
+    try:
+        args.run_id = int(args.run_id)
+    except ValueError:
+        logging.critical("The `--run-id` argument must be numeric. Exiting...")
+        sys.exit(210)
+    if args.run_id < 0 or args.run_id > 9999:
+        logging.critical(
+            "The `--run-id` argument must be comprised between 0 and 9999. Exiting..."
+        )
+        sys.exit(211)
+
+
 def parse_args(arguments):
     parser = argparse.ArgumentParser(
         description="Generate the required fixed width format files from delimited "
@@ -161,7 +196,18 @@ def parse_args(arguments):
         "application to accept it. Numeric value between 0 and 9999, max 4 "
         "characters.",
         action="store",
-        required=True,
+        required=False,
+    )
+    parser.add_argument(
+        "-rf",
+        "--run-id-file",
+        help="Point to a file from which to retrieve the ID for this run. After "
+        "processing, the Run ID + 1 is saved to this file, allowing for automated "
+        "recurring runs (for instance associated with the `--input-directory` and "
+        "`--move-input-files` arguments). Can be used in conjunction with the "
+        "`--run-id` argument to seed the initial value of the Run ID.",
+        action="store",
+        required=False,
     )
     parser.add_argument(
         "-fv",
@@ -247,16 +293,7 @@ def parse_args(arguments):
         )
         sys.exit(218)
 
-    try:
-        args.run_id = int(args.run_id)
-    except ValueError:
-        logging.critical("The `--run-id` argument must be numeric. Exiting...")
-        sys.exit(210)
-    if args.run_id < 0 or args.run_id > 9999:
-        logging.critical(
-            "The `--run-id` argument must be comprised between 0 and 9999. Exiting..."
-        )
-        sys.exit(211)
+    validate_run_id_run_id_file(args)
 
     if args.date_report:
         try:
@@ -366,10 +403,15 @@ def init():
                 run_id,
                 args.file_version,
             )
-            save_metadata_file(output, metadata_file_name)
+            save_file(output, metadata_file_name)
             if args.move_input_files:
                 shutil.move(input_file, args.output_directory)
             logging.info("Metadata file written, end processing file %s" % input_file)
+
+        if args.run_id_file:
+            # Save the next Run ID to the file
+            run_id = str(int(run_id) + 1)
+            save_file(run_id, args.run_id_file)
 
 
 init()

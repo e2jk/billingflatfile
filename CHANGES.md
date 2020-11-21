@@ -12,6 +12,7 @@ Non-breaking changes:
 ---------------------
 * Process all the files in a directory as multiple input files through the new arguments `--input-directory` and `--output-directory`
 * New `--move-input-files` argument to move the input files to the output directory after processing
+* New `--run-id-file` arguments to read and save the next Run ID. Allows for automated recurring runs, for instance associated with the `--input-directory` and `--move-input-files` arguments
 
 v1.0.4 (2020-11-02)
 ===================
