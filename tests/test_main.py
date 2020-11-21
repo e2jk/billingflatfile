@@ -24,6 +24,13 @@ sys.path.append(".")
 target = __import__("billingflatfile")
 
 
+def num_files_in_directory(dir):
+    files = [
+        name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name))
+    ]
+    return len(files)
+
+
 class TestGetVersion(unittest.TestCase):
     def test_get_version_valid(self):
         """
@@ -226,7 +233,7 @@ class TestParseArgs(unittest.TestCase):
         self.assertEqual(parser.application_id, "SE")
         self.assertEqual(parser.run_description, "")
         self.assertEqual(parser.billing_type, " ")
-        self.assertEqual(parser.run_id, "0123")
+        self.assertEqual(parser.run_id, 123)
         self.assertEqual(parser.loglevel, logging.WARNING)
         self.assertEqual(parser.logging_level, "WARNING")
 
@@ -277,7 +284,7 @@ class TestParseArgs(unittest.TestCase):
                 "overwrite_files=False, "
                 "quotechar='\"', "
                 "run_description='', "
-                "run_id='0123', "
+                "run_id=123, "
                 "skip_footer=0, "
                 "skip_header=0, "
                 "truncate=[], "
@@ -796,9 +803,9 @@ class TestInit(unittest.TestCase):
         shutil.rmtree(output_directory)
         self.assertFalse(os.path.isdir(output_directory))
 
-    def test_init_valid(self):
+    def test_init_valid_input_file(self):
         """
-        Test the init code with valid parameters
+        Test the init code with valid parameters, single input file
         """
         output_directory = "nonexistent_dir"
         self.assertFalse(os.path.isdir(output_directory))
@@ -873,6 +880,147 @@ class TestInit(unittest.TestCase):
         # Remove the detailed output file
         os.remove(detailed_file_name)
         self.assertFalse(os.path.isfile(detailed_file_name))
+        shutil.rmtree(output_directory)
+        self.assertFalse(os.path.isdir(output_directory))
+
+    def test_init_valid_input_directory(self):
+        """
+        Test the init code with valid parameters, multiple input files
+        """
+        input_directory = "tests/sample_files/multiple"
+        output_directory = "nonexistent_dir"
+        self.assertEqual(num_files_in_directory(input_directory), 3)
+        self.assertFalse(os.path.isdir(output_directory))
+        target.__name__ = "__main__"
+        target.sys.argv = [
+            "scriptname.py",
+            "--input-directory",
+            input_directory,
+            "--output-directory",
+            output_directory,
+            "--overwrite-files",
+            "--config",
+            "tests/sample_files/configuration1.xlsx",
+            "--delimiter",
+            "^",
+            "--skip-header",
+            "1",
+            "--skip-footer",
+            "1",
+            "--application-id",
+            "SE",
+            "--run-description",
+            "AAA",
+            "--billing-type",
+            "H",
+            "--run-id",
+            "123",
+            "--txt-extension",
+            "--locale",
+            "fr_FR.utf8",
+        ]
+        try:
+            target.init()
+        except localeError:
+            # On Windows, the French locale is just called "fr"
+            target.sys.argv[-1] = "fr"
+            target.init()
+
+        self.assertTrue(os.path.isdir(output_directory))
+        self.assertEqual(num_files_in_directory(output_directory), 6)
+
+        for run_id in (123, 124, 125):
+            # Confirm the output files have been written and their content
+            metadata_file_name = "%s/SSE0%dE.txt" % (output_directory, run_id)
+            self.assertTrue(os.path.isfile(metadata_file_name))
+            with open(metadata_file_name) as f:
+                s = f.read()
+                expected_output = (
+                    "SSEAAA                           "
+                    "9999999900000000H00000300%dV1.11                          "
+                    "                                                           "
+                    "                                                 " % run_id
+                )
+                self.assertEqual(expected_output, s)
+            # Remove the metadata output file
+            os.remove(metadata_file_name)
+            self.assertFalse(os.path.isfile(metadata_file_name))
+
+            detailed_file_name = "%s/SSE0%dD.txt" % (output_directory, run_id)
+            self.assertTrue(os.path.isfile(detailed_file_name))
+            with open(detailed_file_name) as f:
+                s = f.read()
+                expected_output = (
+                    "0004000133034205413540000100202007312006"
+                    "                                        "
+                    "Leendert MOLENDIJK [90038979]           \n"
+                    "0004000133034005407940000157202003051022"
+                    "                                        "
+                    "Leendert MOLENDIJK [90038979]           \n"
+                    "0004000133034105409340022139202012252006"
+                    "                                        "
+                    "Leendert MOLENDIJK [90038979]           "
+                )
+                self.assertEqual(expected_output, s)
+            # Remove the detailed output file
+            os.remove(detailed_file_name)
+            self.assertFalse(os.path.isfile(detailed_file_name))
+        shutil.rmtree(output_directory)
+        self.assertFalse(os.path.isdir(output_directory))
+
+    def test_init_input_directory_run_id_too_high(self):
+        """
+        Test the init code with valid parameters, multiple input files but
+        the Run ID becomes too high
+        """
+        input_directory = "tests/sample_files/multiple"
+        output_directory = "nonexistent_dir"
+        self.assertEqual(num_files_in_directory(input_directory), 3)
+        self.assertFalse(os.path.isdir(output_directory))
+        target.__name__ = "__main__"
+        target.sys.argv = [
+            "scriptname.py",
+            "--input-directory",
+            input_directory,
+            "--output-directory",
+            output_directory,
+            "--overwrite-files",
+            "--config",
+            "tests/sample_files/configuration1.xlsx",
+            "--delimiter",
+            "^",
+            "--skip-header",
+            "1",
+            "--skip-footer",
+            "1",
+            "--application-id",
+            "SE",
+            "--run-description",
+            "AAA",
+            "--billing-type",
+            "H",
+            "--run-id",
+            "9998",
+            "--txt-extension",
+            "--locale",
+            "fr_FR.utf8",
+        ]
+        with self.assertRaises(SystemExit) as cm1, self.assertLogs(
+            level="CRITICAL"
+        ) as cm2:
+            try:
+                target.init()
+            except localeError:
+                # On Windows, the French locale is just called "fr"
+                target.sys.argv[-1] = "fr"
+                target.init()
+        self.assertEqual(cm1.exception.code, 223)
+        self.assertEqual(
+            cm2.output,
+            [
+                "CRITICAL:root:The Run ID can't be higher than 9999. Exiting..."
+            ],
+        )
         shutil.rmtree(output_directory)
         self.assertFalse(os.path.isdir(output_directory))
 

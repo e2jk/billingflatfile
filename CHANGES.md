@@ -9,6 +9,7 @@ Breaking changes:
 
 Non-breaking changes:
 ---------------------
+* Process all the files in a directory as multiple input files through the new arguments `--input-directory` and `--output-directory`
 
 v1.0.4 (2020-11-02)
 ===================

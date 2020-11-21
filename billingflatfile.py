@@ -8,6 +8,7 @@ import logging
 import os
 import pathlib
 import re
+import shutil
 import sys
 
 import delimited2fixedwidth
@@ -256,7 +257,6 @@ def parse_args(arguments):
             "The `--run-id` argument must be comprised between 0 and 99999. Exiting..."
         )
         sys.exit(211)
-    args.run_id = str(args.run_id).zfill(4)
 
     if args.date_report:
         try:
@@ -282,65 +282,94 @@ def init():
         # Parse the provided command-line arguments
         args = parse_args(sys.argv[1:])
 
-        metadata_file_name = os.path.join(
-            args.output_directory, "S%s%sE" % (args.application_id, args.run_id)
-        )
-        detailed_file_name = os.path.join(
-            args.output_directory, "S%s%sD" % (args.application_id, args.run_id)
-        )
-        if args.txt_extension:
-            metadata_file_name += ".txt"
-            detailed_file_name += ".txt"
-        logging.debug("The metadata file will be written to '%s'" % metadata_file_name)
-        logging.debug("The detailed file will be written to '%s'" % detailed_file_name)
-        if os.path.isfile(metadata_file_name) and not args.overwrite_files:
-            logging.critical(
-                "The metadata output file '%s' does already exist, will NOT be "
-                "overwritten. Add the `--overwrite-files` argument to overwrite. "
-                "Exiting..." % metadata_file_name
-            )
-            sys.exit(219)
-        if os.path.isfile(detailed_file_name) and not args.overwrite_files:
-            logging.critical(
-                "The detailed output file '%s' does already exist, will NOT be "
-                "overwritten. Add the `--overwrite-files` argument to overwrite. "
-                "Exiting..." % detailed_file_name
-            )
-            sys.exit(220)
+        input_files = []
+        if args.input:
+            # Just a single input/output files combination
+            input_files = [args.input]
+        elif args.input_directory:
+            # Process all files in that top-level directory (no subdirectories)
+            (_, _, filenames) = next(os.walk(args.input_directory))
+            for ifile in filenames:
+                input_files.append(os.path.join(args.input_directory, ifile))
+        run_id = args.run_id - 1
 
-        # Run the delimited2fixedwidth main process
-        # Generates the main file with the detailed transactions
-        (num_input_rows, oldest_date, most_recent_date) = delimited2fixedwidth.process(
-            args.input,
-            detailed_file_name,
-            args.config,
-            args.delimiter,
-            args.quotechar,
-            args.skip_header,
-            args.skip_footer,
-            args.date_report,
-            args.locale,
-            args.truncate,
-            args.divert,
-        )
-        logging.info(
-            "Processed %d rows, oldest date %s, most recent date %s"
-            % (num_input_rows, oldest_date, most_recent_date)
-        )
+        for input_file in input_files:
+            logging.info("Processing input file %s", input_file)
+            run_id = int(run_id) + 1
+            if run_id > 9999:
+                logging.critical("The Run ID can't be higher than 9999. Exiting...")
+                sys.exit(223)
+            # Format the run-id numerically with 4 digits
+            run_id = str(run_id).zfill(4)
+            metadata_file_name = os.path.join(
+                args.output_directory, "S%s%sE" % (args.application_id, run_id)
+            )
+            detailed_file_name = os.path.join(
+                args.output_directory, "S%s%sD" % (args.application_id, run_id)
+            )
+            if args.txt_extension:
+                metadata_file_name += ".txt"
+                detailed_file_name += ".txt"
+            logging.debug(
+                "The metadata file will be written to '%s'" % metadata_file_name
+            )
+            logging.debug(
+                "The detailed file will be written to '%s'" % detailed_file_name
+            )
+            if os.path.isfile(metadata_file_name) and not args.overwrite_files:
+                logging.critical(
+                    "The metadata output file '%s' does already exist, will NOT be "
+                    "overwritten. Add the `--overwrite-files` argument to overwrite. "
+                    "Exiting..." % metadata_file_name
+                )
+                sys.exit(219)
+            if os.path.isfile(detailed_file_name) and not args.overwrite_files:
+                logging.critical(
+                    "The detailed output file '%s' does already exist, will NOT be "
+                    "overwritten. Add the `--overwrite-files` argument to overwrite. "
+                    "Exiting..." % detailed_file_name
+                )
+                sys.exit(220)
 
-        # Generate the second file containing the metadata
-        output = generate_metadata_file(
-            args.application_id,
-            args.run_description,
-            oldest_date,
-            most_recent_date,
-            args.billing_type,
-            num_input_rows,
-            args.run_id,
-            args.file_version,
-        )
-        save_metadata_file(output, metadata_file_name)
-        logging.info("Metadata file written, end of the process")
+            # Run the delimited2fixedwidth main process
+            # Generates the main file with the detailed transactions
+            (
+                num_input_rows,
+                oldest_date,
+                most_recent_date,
+            ) = delimited2fixedwidth.process(
+                input_file,
+                detailed_file_name,
+                args.config,
+                args.delimiter,
+                args.quotechar,
+                args.skip_header,
+                args.skip_footer,
+                args.date_report,
+                args.locale,
+                args.truncate,
+                args.divert,
+            )
+            logging.info(
+                "Processed %d rows, oldest date %s, most recent date %s"
+                % (num_input_rows, oldest_date, most_recent_date)
+            )
+
+            # Generate the second file containing the metadata
+            output = generate_metadata_file(
+                args.application_id,
+                args.run_description,
+                oldest_date,
+                most_recent_date,
+                args.billing_type,
+                num_input_rows,
+                run_id,
+                args.file_version,
+            )
+            save_metadata_file(output, metadata_file_name)
+            if args.move_input_files:
+                shutil.move(input_file, args.output_directory)
+            logging.info("Metadata file written, end processing file %s" % input_file)
 
 
 init()
