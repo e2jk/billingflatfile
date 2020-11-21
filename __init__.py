@@ -3,4 +3,4 @@
 
 #    This file is part of billingflatfile and is MIT-licensed.
 
-__version__ = "1.0.5-dev"
+__version__ = "1.0.5"
