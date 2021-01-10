@@ -25,7 +25,7 @@ jobs:
 
       - name: Run tests
         run: |
-          ./test.sh
+          pipenv run sh ./test.sh
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
