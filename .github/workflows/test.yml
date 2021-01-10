@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install French locale
+        run: sudo apt-get install language-pack-fr
+
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
