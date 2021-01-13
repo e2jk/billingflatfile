@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 coverage = "==5.3.1"
 codecov = "==2.1.11"
-pyinstaller = "==4.1"
+pyinstaller = "==4.2"
 flake8 = "==3.8.4"
 flake8-bugbear = "==20.11.1"
 black = "==20.8b1"
