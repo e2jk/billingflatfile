@@ -1,0 +1,19 @@
+name: Test PyPI install
+
+on:
+  pull_request: {}
+  push:
+    branches: master
+    tags: "*"
+
+jobs:
+  test:
+    name: Test if installation from PyPI is successful
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image, final output should be billingflatfile's help text
+      run: docker build -f fromPyPI.Dockerfile -t e2jk/billingflatfile_test --rm .
