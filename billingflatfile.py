@@ -14,7 +14,7 @@ import sys
 import delimited2fixedwidth
 
 
-__version__ = "1.0.6"
+__version__ = "1.0.7-dev"
 
 
 def save_file(output_content, output_file):
