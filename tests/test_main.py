@@ -31,35 +31,12 @@ def num_files_in_directory(dir):
     return len(files)
 
 
-class TestGetVersion(unittest.TestCase):
-    def test_get_version_valid(self):
+class TestVersion(unittest.TestCase):
+    def test_version_valid(self):
         """
-        Test the script's version
+        Validate that both the script and the tests have the same version
         """
-        version = target.get_version("__init__.py")
-        self.assertEqual(CURRENT_VERSION, version)
-
-    def test_get_version_invalid_file(self):
-        """
-        Test the Exception when getting the version from an invalid file
-        """
-        with self.assertRaises(RuntimeError) as cm:
-            target.get_version("LICENSE")
-        self.assertEqual(str(cm.exception), "Unable to find version string.")
-
-    def test_get_version_nonexistent_file(self):
-        """
-        Test the Exception when getting the version from a nonexistent file
-        """
-        nonexistent_file = "tests/sample_files/nonexistent_test_output.txt"
-        # Confirm the output file doesn't exist
-        if os.path.isfile(nonexistent_file):
-            os.remove(nonexistent_file)
-            self.assertFalse(os.path.isfile(nonexistent_file))
-        with self.assertRaises(FileNotFoundError) as cm:
-            target.get_version(nonexistent_file)
-        expected_output = "[Errno 2] No such file or directory: '%s'" % nonexistent_file
-        self.assertEqual(str(cm.exception), expected_output)
+        self.assertEqual(CURRENT_VERSION, target.__version__)
 
 
 class TestPadOutputValue(unittest.TestCase):

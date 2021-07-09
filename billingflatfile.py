@@ -14,13 +14,7 @@ import sys
 import delimited2fixedwidth
 
 
-def get_version(rel_path):
-    with open(rel_path) as f:
-        for line in f.read().splitlines():
-            if line.startswith("__version__"):
-                return line.split('"')[1]
-        else:
-            raise RuntimeError("Unable to find version string.")
+__version__ = "1.0.6-dev"
 
 
 def save_file(output_content, output_file):
@@ -148,7 +142,7 @@ def parse_args(arguments):
     parser.add_argument(
         "--version",
         action="version",
-        version="%s %s" % ("%(prog)s", get_version("__init__.py")),
+        version="%s %s" % ("%(prog)s", __version__),
     )
 
     delimited2fixedwidth.add_shared_args(parser)

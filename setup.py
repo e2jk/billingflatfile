@@ -11,11 +11,11 @@ with open("requirements-no-dev.txt", "r") as fh:
     if requirements[0].startswith("-i http"):
         requirements.pop(0)
 
-from billingflatfile import get_version
+from billingflatfile import __version__
 
 setuptools.setup(
     name="billingflatfile",
-    version=get_version("__init__.py"),
+    version=__version__,
     author="Emilien Klein",
     author_email="emilien@klein.st",
     description="Generate the required fixed width format files from "
