@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-coverage = "==5.5"
+coverage = "==6.5.0"
 codecov = "==2.1.12"
 pyinstaller = "==4.10"
 flake8 = "==3.9.2"
