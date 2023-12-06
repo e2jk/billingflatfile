@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build Docker image, final output should be billingflatfile's help text
       run: docker build -f fromPyPI.Dockerfile -t e2jk/billingflatfile_test --rm .
